@@ -6,22 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('pembayarans', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::create('pembayaran', function (Blueprint $table) {
+            $table->id('pembayaran_id');
+            $table->foreignId('id_order')->nullable()->constrained('orders', 'id_order');
+            $table->enum('metode', ['Transfer Bank', 'QRIS', 'E-Wallet'])->nullable();
+            $table->integer('jumlah_bayar')->nullable();
+            $table->timestamp('tanggal_pembayaran')->useCurrent();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('pembayarans');
+        Schema::dropIfExists('pembayaran');
     }
 };

@@ -6,22 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('ulasans', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::create('ulasan', function (Blueprint $table) {
+            $table->id('id_ulasan');
+            $table->foreignId('id_pelanggan')->nullable()->constrained('pelanggan', 'id_pelanggan');
+            $table->foreignId('kode_produk')->nullable()->constrained('produk', 'kode_produk');
+            $table->integer('rating')->nullable();
+            $table->timestamp('tanggal')->useCurrent();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('ulasans');
+        Schema::dropIfExists('ulasan');
     }
 };

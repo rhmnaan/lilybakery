@@ -6,22 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('history_orders', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::create('history_order', function (Blueprint $table) {
+            $table->id('id_history');
+            $table->foreignId('id_order')->nullable()->constrained('orders', 'id_order');
+            $table->timestamp('tanggal_selesai')->useCurrent();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('history_orders');
+        Schema::dropIfExists('history_order');
     }
 };

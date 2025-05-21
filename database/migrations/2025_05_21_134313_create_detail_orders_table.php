@@ -6,22 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('detail_orders', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::create('detail_order', function (Blueprint $table) {
+            $table->id('id_detail_order');
+            $table->foreignId('id_order')->nullable()->constrained('orders', 'id_order');
+            $table->foreignId('kode_produk')->nullable()->constrained('produk', 'kode_produk');
+            $table->integer('jumlah')->nullable();
+            $table->integer('subtotal')->nullable();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('detail_orders');
+        Schema::dropIfExists('detail_order');
     }
 };

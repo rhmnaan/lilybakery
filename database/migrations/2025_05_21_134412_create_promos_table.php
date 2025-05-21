@@ -6,22 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('promos', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::create('promo', function (Blueprint $table) {
+            $table->id('id_promo');
+            $table->foreignId('kode_produk')->nullable()->constrained('produk', 'kode_produk');
+            $table->decimal('diskon_persen', 5, 2)->nullable();
+            $table->date('tanggal_mulai')->nullable();
+            $table->date('tanggal_berakhir')->nullable();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('promos');
+        Schema::dropIfExists('promo');
     }
 };

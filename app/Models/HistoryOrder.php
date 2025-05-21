@@ -2,22 +2,20 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class HistoryOrder extends Model
 {
     use HasFactory;
 
-    protected $table = 'pembayaran';
-    protected $primaryKey = 'pembayaran_id';
+    protected $table = 'history_order';
+    protected $primaryKey = 'id_history';
     public $timestamps = false;
-
+    
     protected $fillable = [
         'id_order',
-        'metode',
-        'jumlah_bayar',
-        'tanggal_pembayaran'
+        'tanggal_selesai'
     ];
 
     public function order()

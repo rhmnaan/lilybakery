@@ -12,9 +12,9 @@
             <div>
                 <h3 class="text-lg font-bold mb-4">LILY BAKERY</h3>
                 <ul class="space-y-2">
-                    <li><a href="#" class="text-black hover:text-gray-700">About us</a></li>
+                    <li><a href="{{ url('/about-us') }}" class="text-black hover:text-gray-700">About us</a></li>
                     <li><a href="#" class="text-black hover:text-gray-700">Stores</a></li>
-                    <li><a href="#" class="text-black hover:text-gray-700">Contact</a></li>
+                    <li><a href="{{ url('/contact') }}" class="text-black hover:text-gray-700">Contact</a></li>
                 </ul>
             </div>
             
@@ -22,9 +22,9 @@
             <div>
                 <h3 class="text-lg font-bold mb-4">HELP CENTER</h3>
                 <ul class="space-y-2">
-                    <li><a href="#" class="text-black hover:text-gray-700">Privacy Policy</a></li>
-                    <li><a href="#" class="text-black hover:text-gray-700">Delivery Information</a></li>
-                    <li><a href="#" class="text-black hover:text-gray-700">Payment Methods</a></li>
+                    <li><a href="{{ url('/privacy-policy') }}" class="text-black hover:text-gray-700">Privacy Policy</a></li>
+                    <li><a href="{{ url('/delivery-info') }}" class="text-black hover:text-gray-700">Delivery Information</a></li>
+                    <li><a href="{{ url('/payment-method') }}" class="text-black hover:text-gray-700">Payment Methods</a></li>
                 </ul>
             </div>
 

@@ -15,6 +15,9 @@ export default {
       },
       fontFamily: {
         'poppins': ['Poppins', 'sans-serif'],
+        'questrial': ['Questrial', 'sans-serif'],
+        'inter': ['Inter', 'sans-serif'],
+        'outfit': ['Outfit', 'sans-serif'],
       }
     },
   },

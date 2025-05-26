@@ -1,15 +1,130 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-  font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
 }
 
 .hero-pattern {
-  background-image: url('/images/pattern.svg');
-  background-repeat: no-repeat;
-  background-position: right bottom;
+    background-image: url("/images/pattern.svg");
+    background-repeat: no-repeat;
+    background-position: right bottom;
 }
+
+@media (max-width: 768px) {
+    .elemen-cake {
+        width: 120%;
+        left: -10%;
+    }
+}
+
+/* style untuk elemen cake */
+.elemen-cake {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200%;
+    max-width: 2000px;
+    height: auto;
+    transform: translate(-44%, -10%) scale(1); /* posisi default tetap bergeser */
+    transition: transform 0.3s ease;
+    z-index: 10;
+}
+
+/* batasstyle elemen cake */
+
+/* animasi untuk whattsap icon and information  */
+
+/* Animasi fade-in dan slide-up */
+@keyframes fadeSlideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-slide-up {
+    animation: fadeSlideUp 0.8s ease forwards;
+}
+
+/* Styling balon chat ukuran sekitar 200px */
+.chat-bubble {
+    background: white;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    padding: 12px;
+    width: 200px; /* ukuran balon chat sesuai permintaan */
+    font-size: 0.75rem;
+    color: #2d3748; /* gray-800 */
+    overflow: hidden;
+    white-space: normal; /* biar bisa wrap teks */
+    border-right: 3px solid #25d366; /* warna hijau WhatsApp */
+}
+
+/* Cursor efek seperti sedang mengetik */
+.typing-cursor {
+    display: inline-block;
+    width: 8px;
+    background-color: #25d366;
+    margin-left: 2px;
+    animation: blink 1s steps(2, start) infinite;
+    vertical-align: bottom;
+}
+
+@keyframes blink {
+    to {
+        visibility: hidden;
+    }
+}
+
+/*batas animasi  */
+
+/* css untuk page recommended cakes  */
+#cakes-container::-webkit-scrollbar {
+    display: none;
+}
+#cakes-container {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    scroll-behavior: smooth; /* smooth native scroll */
+    cursor: grab;
+    transition: cursor 0.3s ease;
+}
+#cakes-container:active {
+    cursor: grabbing;
+}
+
+/* Tombol Add to cart */
+button.bg-lily-pink {
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+button.bg-lily-pink:hover {
+    background-color: #d1506f; /* lily-pink-dark */
+    transform: scale(1.05);
+}
+
+/* Card shadow lebih halus */
+.shadow-md {
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+.shadow-md:hover {
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* untuk menyembunyikan scroll bar di untuk Recommended Cakes */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+

@@ -11,61 +11,59 @@
     
     @include('layouts.header')
 
-    <!-- Header section -->
-    <section class="py-16 bg-white"> 
-        <div class="container mx-auto px-4"> 
-            <div class="flex flex-col md:flex-row md:space-x-8">
-                <!-- Informasi Kontak -->
-                <div class="bg-[#D89CA2] text-black rounded-xl shadow-md px-6 py-10 mb-10 md:mb-0 w-full md:w-1/2">
-                    <div class="space-y-10 text-center text-lg font-semibold">
-                    <div>
-                        <div class="text-7xl mb-2"><i class="fas fa-headphones-alt"></i></div>
-                        <div>Hotline</div>
-                        <div class="text-2xl font-bold">1500581</div>
-                    </div>
-                    <div>
-                        <div class="text-7xl mb-2"><i class="fab fa-whatsapp"></i></div>
-                        <div>Whatsapp</div>
-                        <div class="text-2xl font-bold">+6282123456789</div>
-                    </div>
-                    <div>
-                        <div class="text-7xl mb-2"><i class="fas fa-envelope"></i></div>
-                        <div>Email</div>
-                        <div class="text-2xl font-bold break-words">info@lilybakery.id</div>
-                    </div>
-                    </div>
+    <!-- Contact Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-16 bg-white pt-40">
+        <div class="container mx-auto flex flex-col md:flex-row gap-6">
+            <!-- Contact Info -->
+            <div class="bg-[#D6929F] text-black w-full md:w-1/2 rounded-2xl shadow-xl p-12 flex flex-col justify-center items-center gap-14">
+                <div class="flex flex-col items-center text-center">
+                    <i class="fas fa-headset text-5xl mb-3"></i>
+                    <p class="text-2xl">Hotline</p>
+                    <p class="font-bold text-2xl">1500581</p>
                 </div>
-
-                <!-- Form Kontak -->
-                <div class="bg-white border rounded-xl px-6 py-10 w-full md:w-1/2">
-                    <h2 class="text-2xl font-bold mb-6">Contact</h2>
-                    <form action="#" method="POST" class="space-y-4">
-                    @csrf
-                    <div>
-                        <label for="nama" class="block text-gray-700 font-medium">Nama Lengkap</label>
-                        <input type="text" id="nama" name="nama" class="w-full border rounded px-3 py-2 mt-1 focus:outline-none" required>
-                    </div>
-                    <div>
-                        <label for="telepon" class="block text-gray-700 font-medium">Nomor Telepon</label>
-                        <input type="text" id="telepon" name="telepon" class="w-full border rounded px-3 py-2 mt-1 focus:outline-none" required>
-                    </div>
-                    <div>
-                        <label for="email" class="block text-gray-700 font-medium">Email</label>
-                        <input type="email" id="email" name="email" class="w-full border rounded px-3 py-2 mt-1 focus:outline-none" required>
-                    </div>
-                    <div>
-                        <label for="pesan" class="block text-gray-700 font-medium">Pesan</label>
-                        <textarea id="pesan" name="pesan" rows="4" class="w-full border rounded px-3 py-2 mt-1 focus:outline-none" required></textarea>
-                    </div>
-                    <div class="flex justify-end">
-                        <button type="submit" class="bg-[#D89CA2] text-white px-6 py-2 rounded hover:bg-[#c4868d] transition-colors">Kirim</button>
-                    </div>
-                    </form>
+                <div class="flex flex-col items-center text-center">
+                    <i class="fab fa-whatsapp text-5xl mb-3"></i>
+                    <p class="text-2xl">Whatsapp</p>
+                    <p class="font-bold text-2xl">+6282123456789</p>
+                </div>
+                <div class="flex flex-col items-center text-center">
+                    <i class="fas fa-envelope text-5xl mb-3"></i>
+                    <p class="text-2xl">Email</p>
+                    <p class="font-bold text-2xl">info@lilybakery.id</p>
                 </div>
             </div>
-        </div> 
-    </section>
 
+
+            <!-- Contact Form -->
+            <div class="bg-white border border-gray-300 rounded-xl w-full md:w-2/3 p-8">
+                <h2 class="text-5xl font-bold text-black text-center mb-8">Contact</h2>
+                <form action="#" method="POST" class="space-y-6">
+                    @csrf
+                    <div>
+                        <label class="block font-medium mb-1">Nama Lengkap</label>
+                        <input type="text" name="nama" class="w-full border rounded-md px-4 py-2" required>
+                    </div>
+                    <div>
+                        <label class="block font-medium mb-1">Nomor Telepon</label>
+                        <input type="text" name="telepon" class="w-full border rounded-md px-4 py-2" required>
+                    </div>
+                    <div>
+                        <label class="block font-medium mb-1">Email</label>
+                        <input type="email" name="email" class="w-full border rounded-md px-4 py-2" required>
+                    </div>
+                    <div>
+                        <label class="block font-medium mb-1">Pesan</label>
+                        <textarea name="pesan" rows="5" class="w-full border rounded-md px-4 py-2" required></textarea>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="submit" class="bg-rose-300 hover:bg-rose-400 text-black font-semibold px-6 py-2 rounded-full">
+                            Kirim
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
 
     @include('layouts.footer')
 </body>

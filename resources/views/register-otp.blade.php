@@ -6,52 +6,18 @@
     <title>Register - Lily Bakery</title>
     @vite('resources/css/app.css')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .lily-pink {
-            background-color: #f8b4c4;
-        }
-        .lily-pink-dark {
-            color: #e879a0;
-        }
-        .lily-pink-bg {
-            background-color: #e879a0;
-        }
-        .text-lily-pink-dark {
-            color: #e879a0;
-        }
-        .bg-lily-pink {
-            background-color: #f8b4c4;
-        }
-        .hover\:bg-lily-pink-dark:hover {
-            background-color: #e879a0;
-        }
-        .border-lily-pink-dark {
-            border-color: #e879a0;
-        }
-        .register-bg {
-            background: linear-gradient(135deg, #f8b4c4 0%, #e879a0 100%);
-        }
-        .step-active {
-            background-color: #e879a0;
-            color: white;
-        }
-        .step-inactive {
-            background-color: #f3f4f6;
-            color: #6b7280;
-        }
-    </style>
 </head>
 <body class="antialiased bg-gray-100 min-h-screen">
     
     @include('layouts.header')
 
     <!-- Register Section -->
-    <section class="flex-1 flex items-center justify-center py-12 px-4">
+    <section class="flex-1 flex items-center justify-center py-12 px-4 pt-36">
         <div class="w-full max-w-md">
             <!-- Register Card -->
             <div class="bg-white rounded-2xl shadow-lg p-8">
                 
-                <!-- Step 1: Choose OTP Method -->
+                <!-- Step 1 -->
                 <div id="step1" class="step-container">
                     <div class="text-center mb-8">
                         <h2 class="text-3xl font-bold text-gray-800 mb-2">Register</h2>
@@ -60,42 +26,36 @@
 
                     <form id="chooseOtpForm" method="POST" action="">
                         @csrf
-                        
-                        <!-- Phone Number Button -->
                         <div class="mb-4">
                             <button 
                                 type="button"
                                 onclick="selectOtpMethod('phone')"
-                                class="w-full px-4 py-4 lily-pink text-white rounded-full font-medium hover:bg-lily-pink-dark transition duration-300 shadow-md"
+                                class="w-full px-4 py-4 bg-[#E59CAA] text-white rounded-full font-medium hover:bg-[#e879a0] transition duration-300 shadow-md"
                             >
                                 Nomor Telepon
                             </button>
                         </div>
-
-                        <!-- Email Button -->
                         <div class="mb-6">
                             <button 
                                 type="button"
                                 onclick="selectOtpMethod('email')"
-                                class="w-full px-4 py-4 lily-pink text-white rounded-full font-medium hover:bg-lily-pink-dark transition duration-300 shadow-md"
+                                class="w-full px-4 py-4 bg-[#E59CAA] text-white rounded-full font-medium hover:bg-[#e879a0] transition duration-300 shadow-md"
                             >
                                 Email
                             </button>
                         </div>
-
                         <input type="hidden" id="otp_method" name="otp_method" value="">
                     </form>
 
-                    <!-- Login Link -->
                     <div class="text-center">
                         <p class="text-gray-600">
                             Already have account? 
-                            <a href="" class="text-lily-pink-dark hover:underline font-medium">Login</a>
+                            <a href="" class="text-[#e879a0] hover:underline font-medium">Login</a>
                         </p>
                     </div>
                 </div>
 
-                <!-- Step 2: Enter Contact Info -->
+                <!-- Step 2 -->
                 <div id="step2" class="step-container hidden">
                     <div class="text-center mb-8">
                         <h2 class="text-3xl font-bold text-gray-800 mb-2">Register</h2>
@@ -105,45 +65,41 @@
                     <form id="sendOtpForm" method="POST" action="">
                         @csrf
                         <input type="hidden" name="otp_method" id="selected_method" value="">
-                        
-                        <!-- Contact Input -->
                         <div class="mb-6">
                             <input 
-                                type="text" 
-                                name="contact" 
-                                id="contact_input"
-                                placeholder="Nomor Telepon"
-                                class="w-full px-4 py-4 lily-pink text-white placeholder-white rounded-full font-medium text-center focus:outline-none focus:ring-2 focus:ring-lily-pink-dark transition duration-300"
-                                required
+                            type="text" 
+                            name="contact" 
+                            id="contact_input"
+                            placeholder="Masukkan Kode OTP"
+                            class="w-full px-4 py-4 bg-white text-black placeholder-gray-500 rounded-full font-medium text-center border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#e879a0] transition duration-300"
+                            required
                             >
+
                             @error('contact')
                                 <p class="text-red-500 text-sm mt-1 text-center">{{ $message }}</p>
                             @enderror
                         </div>
-
-                        <!-- Send OTP Button -->
                         <div class="mb-6">
                             <button 
                                 type="submit"
-                                class="w-full px-4 py-4 lily-pink-bg text-white rounded-full font-medium hover:bg-lily-pink-dark transition duration-300 shadow-md"
+                                class="w-full px-4 py-4 bg-[#e879a0] text-white rounded-full font-medium hover:bg-[#d96b8f] transition duration-300 shadow-md"
                             >
                                 Kirim OTP
                             </button>
                         </div>
                     </form>
 
-                    <!-- Back Button -->
                     <div class="text-center">
                         <button 
                             onclick="goToStep(1)"
-                            class="text-gray-600 hover:text-lily-pink-dark text-sm"
+                            class="text-gray-600 hover:text-[#e879a0] text-sm"
                         >
                             ← Kembali
                         </button>
                     </div>
                 </div>
 
-                <!-- Step 3: Verify OTP -->
+                <!-- Step 3 -->
                 <div id="step3" class="step-container hidden">
                     <div class="text-center mb-8">
                         <h2 class="text-3xl font-bold text-gray-800 mb-2">Register</h2>
@@ -152,55 +108,50 @@
 
                     <form id="verifyOtpForm" method="POST" action="">
                         @csrf
-                        
-                        <!-- OTP Input -->
                         <div class="mb-6">
                             <input 
                                 type="text" 
                                 name="otp_code"
                                 placeholder="Kode OTP"
-                                class="w-full px-4 py-4 bg-gray-100 border-0 rounded-lg focus:bg-white focus:ring-2 focus:ring-lily-pink-dark focus:outline-none transition duration-300 text-center"
+                                class="w-full px-4 py-4 bg-white text-black placeholder-gray-500 rounded-full font-medium text-center border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#e879a0] transition duration-300"
                                 maxlength="6"
                                 required
                             >
+
                             @error('otp_code')
                                 <p class="text-red-500 text-sm mt-1 text-center">{{ $message }}</p>
                             @enderror
                         </div>
-
-                        <!-- Verify Button -->
                         <div class="mb-6">
                             <button 
                                 type="submit"
-                                class="w-full px-4 py-4 lily-pink-bg text-white rounded-full font-medium hover:bg-lily-pink-dark transition duration-300 shadow-md"
+                                class="w-full px-4 py-4 bg-[#e879a0] text-white rounded-full font-medium hover:bg-[#d96b8f] transition duration-300 shadow-md"
                             >
                                 Kirim
                             </button>
                         </div>
                     </form>
 
-                    <!-- Resend OTP -->
                     <div class="text-center mb-4">
                         <button 
                             onclick="resendOtp()"
-                            class="text-gray-600 hover:text-lily-pink-dark text-sm"
+                            class="text-gray-600 hover:text-[#e879a0] text-sm"
                         >
                             Kirim ulang OTP
                         </button>
                     </div>
 
-                    <!-- Back Button -->
                     <div class="text-center">
                         <button 
                             onclick="goToStep(2)"
-                            class="text-gray-600 hover:text-lily-pink-dark text-sm"
+                            class="text-gray-600 hover:text-[#e879a0] text-sm"
                         >
                             ← Kembali
                         </button>
                     </div>
                 </div>
 
-                <!-- Step 4: Complete Registration -->
+                <!-- Step 4 -->
                 <div id="step4" class="step-container hidden">
                     <div class="text-center mb-8">
                         <h2 class="text-3xl font-bold text-gray-800 mb-2">Complete Registration</h2>
@@ -209,14 +160,12 @@
 
                     <form method="POST" action="">
                         @csrf
-                        
-                        <!-- Full Name -->
                         <div class="mb-4">
                             <input 
                                 type="text" 
                                 name="name" 
                                 placeholder="Full Name"
-                                class="w-full px-4 py-3 bg-gray-100 border-0 rounded-lg focus:bg-white focus:ring-2 focus:ring-lily-pink-dark focus:outline-none transition duration-300"
+                                class="w-full px-4 py-3 bg-gray-100 border-0 rounded-lg focus:bg-white focus:ring-2 focus:ring-[#e879a0] focus:outline-none transition duration-300"
                                 value="{{ old('name') }}"
                                 required
                             >
@@ -224,36 +173,30 @@
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
-
-                        <!-- Password -->
                         <div class="mb-4">
                             <input 
                                 type="password" 
                                 name="password" 
                                 placeholder="Password"
-                                class="w-full px-4 py-3 bg-gray-100 border-0 rounded-lg focus:bg-white focus:ring-2 focus:ring-lily-pink-dark focus:outline-none transition duration-300"
+                                class="w-full px-4 py-3 bg-gray-100 border-0 rounded-lg focus:bg-white focus:ring-2 focus:ring-[#e879a0] focus:outline-none transition duration-300"
                                 required
                             >
                             @error('password')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
-
-                        <!-- Confirm Password -->
                         <div class="mb-6">
                             <input 
                                 type="password" 
                                 name="password_confirmation" 
                                 placeholder="Confirm Password"
-                                class="w-full px-4 py-3 bg-gray-100 border-0 rounded-lg focus:bg-white focus:ring-2 focus:ring-lily-pink-dark focus:outline-none transition duration-300"
+                                class="w-full px-4 py-3 bg-gray-100 border-0 rounded-lg focus:bg-white focus:ring-2 focus:ring-[#e879a0] focus:outline-none transition duration-300"
                                 required
                             >
                         </div>
-
-                        <!-- Register Button -->
                         <button 
                             type="submit"
-                            class="w-full lily-pink-bg text-white py-3 rounded-full font-medium hover:bg-lily-pink-dark transition duration-300 shadow-md"
+                            class="w-full bg-[#e879a0] text-white py-3 rounded-full font-medium hover:bg-[#d96b8f] transition duration-300 shadow-md"
                         >
                             Complete Registration
                         </button>
@@ -266,76 +209,95 @@
 
     @include('layouts.footer')
 
+    <!-- JavaScript -->
     <script>
-        function selectOtpMethod(method) {
-            document.getElementById('otp_method').value = method;
-            document.getElementById('selected_method').value = method;
-            
-            if (method === 'phone') {
-                document.getElementById('step2-subtitle').textContent = 'Kirim OTP dengan :';
-                document.getElementById('contact_input').placeholder = 'Nomor Telepon';
-                document.getElementById('contact_input').type = 'tel';
-            } else {
-                document.getElementById('step2-subtitle').textContent = 'Kirim OTP dengan :';
-                document.getElementById('contact_input').placeholder = 'Email';
-                document.getElementById('contact_input').type = 'email';
-            }
-            
-            goToStep(2);
-        }
+       function selectOtpMethod(method) {
+        document.getElementById('otp_method').value = method;
+        document.getElementById('selected_method').value = method;
 
-        function goToStep(step) {
-            // Hide all steps
-            document.querySelectorAll('.step-container').forEach(container => {
-                container.classList.add('hidden');
-            });
-            
-            // Show target step
-            document.getElementById('step' + step).classList.remove('hidden');
-        }
+        const input = document.getElementById('contact_input');
 
-        function resendOtp() {
-            // Submit the send OTP form again
-            document.getElementById('sendOtpForm').submit();
-        }
+        // Kosongkan input saat memilih ulang metode OTP
+        input.value = '';
 
-        // Check if there are session variables to determine which step to show
-        @if(session('otp_sent'))
-            document.addEventListener('DOMContentLoaded', function() {
-                goToStep(3);
-            });
-        @endif
+        // Ubah tipe input sesuai metode
+        input.type = method === 'phone' ? 'tel' : 'email';
 
-        @if(session('otp_verified'))
-            document.addEventListener('DOMContentLoaded', function() {
-                goToStep(4);
-            });
-        @endif
+        // Ubah placeholder jadi "Masukkan Kode OTP"
+        input.placeholder = 'Masukkan Kode OTP';
 
-        // Handle form submissions
-        document.getElementById('sendOtpForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Simulate OTP sending (replace with actual AJAX call)
+        // Bersihkan kelas yang konflik dulu
+        input.classList.remove('bg-[#f8b4c4]', 'text-white', 'placeholder-white');
+
+        // Tambahkan kelas baru untuk styling yang benar
+        input.classList.add(
+            'bg-white',
+            'text-black',
+            'placeholder-gray-500',
+            'border',
+            'border-gray-300'
+        );
+
+        goToStep(2);
+    }
+
+
+
+    function goToStep(step) {
+        // Sembunyikan semua step
+        document.querySelectorAll('.step-container').forEach(container => {
+            container.classList.add('hidden');
+        });
+        
+        // Tampilkan step yang dipilih
+        document.getElementById('step' + step).classList.remove('hidden');
+    }
+
+    function resendOtp() {
+        // Submit ulang form kirim OTP
+        document.getElementById('sendOtpForm').submit();
+    }
+
+    // Jika session OTP sudah dikirim, langsung ke step 3
+    @if(session('otp_sent'))
+        document.addEventListener('DOMContentLoaded', function() {
+            goToStep(3);
+        });
+    @endif
+
+    // Jika session OTP sudah terverifikasi, langsung ke step 4
+    @if(session('otp_verified'))
+        document.addEventListener('DOMContentLoaded', function() {
+            goToStep(4);
+        });
+    @endif
+
+    // Submit form kirim OTP
+    document.getElementById('sendOtpForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Simulasi pengiriman OTP, ganti dengan AJAX jika perlu
+        setTimeout(() => {
+            goToStep(3);
+        }, 1000);
+    });
+
+    // Submit form verifikasi OTP
+    document.getElementById('verifyOtpForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const otpCode = document.querySelector('input[name="otp_code"]').value;
+        if (otpCode.length === 6) {
             setTimeout(() => {
-                goToStep(3);
+                goToStep(4);
             }, 1000);
-        });
+        } else {
+            alert('Please enter a valid 6-digit OTP');
+        }
+    });
 
-        document.getElementById('verifyOtpForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Simulate OTP verification (replace with actual AJAX call)
-            const otpCode = document.querySelector('input[name="otp_code"]').value;
-            if (otpCode.length === 6) {
-                setTimeout(() => {
-                    goToStep(4);
-                }, 1000);
-            } else {
-                alert('Please enter a valid 6-digit OTP');
-            }
-        });
     </script>
+
 
 </body>
 </html>

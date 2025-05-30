@@ -40,6 +40,14 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'pelanggan' => [
+            'driver' => 'session',
+            'provider' => 'pelanggans', // Nama provider yang akan kita definisikan di bawah
+        ],
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins', // Kita akan definisikan provider 'admins' di bawah
+        ],
     ],
 
     /*
@@ -64,6 +72,15 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
+        'pelanggans' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Pelanggan::class, // Arahkan ke model Pelanggan Anda
+        ],
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class, // Arahkan ke model Admin Anda
+        ],
+
 
         // 'users' => [
         //     'driver' => 'database',

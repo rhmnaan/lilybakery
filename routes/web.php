@@ -121,21 +121,29 @@ Route::middleware(['auth:admin'])->group(function () {
         // Rute untuk update password admin utama
         Route::put('/settings/main-admin-password/{id}', [SettingController::class, 'updateMainAdminPassword'])->name('settings.updateMainAdminPassword');
 
-       // Rute untuk manajemen admin lain (CRUD)
+        // Rute untuk manajemen admin lain (CRUD)
         Route::get('/settings/admins', [SettingController::class, 'getOtherAdmins'])->name('settings.getOtherAdmins'); // Untuk mendapatkan data awal
         Route::post('/settings/admins', [SettingController::class, 'storeAdmin'])->name('settings.storeAdmin');
         Route::put('/settings/admins/{id}', [SettingController::class, 'updateAdmin'])->name('settings.updateAdmin');
         Route::delete('/settings/admins/{id}', [SettingController::class, 'destroyAdmin'])->name('settings.destroyAdmin');
-        
+
         // admin product
         // Route::get('/product', function () {
         //     return view('Admin.admin-product'); // Sesuaikan path view jika berbeda
         // })->name('product');
-    Route::get('product', [ProdukController::class, 'index'])->name('product'); // Ganti nama route
-    Route::post('product', [ProdukController::class, 'store'])->name('product.store');
-    Route::get('product/{produk}/edit', [ProdukController::class, 'edit'])->name('product.edit');
-    Route::put('product/{produk}', [ProdukController::class, 'update'])->name('product.update');
-    Route::delete('product/{produk}', [ProdukController::class, 'destroy'])->name('product.destroy');
+        Route::get('product', [ProdukController::class, 'index'])->name('product'); // Ganti nama route
+        Route::post('product', [ProdukController::class, 'store'])->name('product.store');
+        Route::get('product/{produk}/edit', [ProdukController::class, 'edit'])->name('product.edit');
+        Route::put('product/{produk}', [ProdukController::class, 'update'])->name('product.update');
+        Route::delete('product/{produk}', [ProdukController::class, 'destroy'])->name('product.destroy');
+
+        // orders
+        Route::get('/orders', [OrdersController::class, 'index'])->name('orders');
+        Route::post('/orders', [OrdersController::class, 'store'])->name('orders.store'); // Ganti dari orders.store ke orders saja agar konsisten
+        Route::post('/orders/export', [OrdersController::class, 'exportData'])->name('orders.data'); // Ganti nama metode
+        Route::get('/orders/{order}/edit', [OrdersController::class, 'edit'])->name('orders.edit');
+        Route::put('/orders/{order}', [OrdersController::class, 'update'])->name('orders.update');
+        Route::delete('/orders/{order}', [OrdersController::class, 'destroy'])->name('orders.destroy');
 
         // admin setting
         Route::get('/setting', function () {

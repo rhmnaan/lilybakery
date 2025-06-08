@@ -66,9 +66,11 @@
         </div>
 
         <div class="pt-4">
-          <button class="w-full bg-[#D6A1A1] hover:bg-rose-400 text-black font-semibold py-3 rounded-full">
-            Continue
-          </button>
+          <a href="{{ route('payment') }}">
+            <button class="w-full bg-[#D6A1A1] hover:bg-rose-400 text-black font-semibold py-3 rounded-full">
+              Continue
+            </button>
+          </a>
         </div>
       </div>
     </div>

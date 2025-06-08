@@ -26,7 +26,8 @@ class OrdersController extends Controller
             ->get();
         
         $produk = DB::table('produk')->get();
+        $pelanggans = DB::table('pelanggan')->get();
 
-        return view('admin.orders', compact('orders', 'produk'));
+        return view('admin.orders', compact('orders', 'produk', 'pelanggans'));
     }
 }

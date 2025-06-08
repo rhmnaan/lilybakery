@@ -12,31 +12,52 @@
                     </div>
                 </div>
                 <nav class="mt-2 space-y-1">
-                    <a href="{{ route('admin.dashboard') }}"
-                        class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]">
+                    {{-- Dashboard Link (Active State) --}}
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]
+                    @if(Request::routeIs('admin.dashboard')) bg-[#F9D8D9] text-gray-900 font-semibold @endif">
+                    {{-- ICON DIKEMBALIKAN SESUAI GAMBAR: Dashboard = Check Circle --}}
                         <i class="far fa-check-circle mr-3 text-xl"></i>
                         <span>Dashboard</span>
                     </a>
+
+                    {{-- Product Link --}}
                     <a href="{{ route('admin.product') }}"
                         class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]">
+                        {{-- ICON DIKEMBALIKAN SESUAI GAMBAR: Product = Edit (Pensil) --}}
                         <i class="far fa-edit mr-3 text-xl"></i>
                         <span>Product</span>
                     </a>
-                    <a href="{{ route('admin.orders') }}"
-                        class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]">
-                        <i class="far fa-user mr-3 text-xl"></i>
+
+                    {{-- Orders --}}
+                    <a href="{{ route('admin.orders') }}" class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]">
+                        {{-- ICON DIKEMBALIKAN SESUAI GAMBAR: Orders = User (Profil) --}}
+                        <i class="fas fa-shopping-bag mr-3 text-xl"></i> {{-- Changed icon to shopping-bag as it fits orders better --}}
                         <span>Orders</span>
                     </a>
-                    <a href="{{ route('admin.customers') }}"
-                        class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]">
+
+                    {{-- Customers --}}
+                    <a href="{{ route('admin.customers') }}" class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]">
+                        {{-- ICON DIKEMBALIKAN SESUAI GAMBAR: Customers = User (Profil) --}}
                         <i class="far fa-user mr-3 text-xl"></i>
                         <span>Customers</span>
                     </a>
-                    <a href="{{ route('admin.setting') }}" class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]
-                                @if(Request::routeIs('admin.setting')) bg-[#F9D8D9] text-gray-900 font-semibold @endif">
+
+                    {{-- Setting --}}
+                    <a href="{{ route('admin.settings') }}" class="flex items-center px-6 py-3 rounded-md font-semibold text-gray-900 bg-[#F9D8D9]">
+                        {{-- ICON TETAP SESUAI GAMBAR: Setting = Cog --}}
                         <i class="fas fa-cog mr-3 text-xl"></i>
                         <span>Setting</span>
                     </a>
+
+                    {{-- Logout Button with Confirmation --}}
+                    {{-- Logout Button with SweetAlert Confirmation --}}
+                    <form id="logout-form" method="POST" action="{{ route('admin.logout') }}" class="block w-full">
+                        @csrf
+                        <button type="submit" class="flex items-center w-full px-6 py-3 rounded-md text-gray-700 hover:bg-red-100 hover:text-red-700">
+                            <i class="fas fa-sign-out-alt mr-3 text-xl"></i>
+                            <span>Logout</span>
+                        </button>
+                    </form>
                 </nav>
             </div>
 
@@ -257,6 +278,7 @@
 
 
     @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             // Data dummy for other admins.
             // In a real application, this data should be fetched from the backend (database).
@@ -584,6 +606,31 @@
                 closeEditPasswordModal();
                 alert('Password admin utama berhasil diubah (Dummy)!');
             }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                // --- Konfirmasi Logout dengan SweetAlert2 ---
+                const logoutForm = document.getElementById('logout-form');
+                if (logoutForm) {
+                    logoutForm.addEventListener('submit', function(event) {
+                        event.preventDefault(); // Mencegah form disubmit secara default
+
+                        Swal.fire({
+                            title: 'Apakah Anda yakin?',
+                            text: "Anda akan keluar dari sesi admin ini!",
+                            icon: 'warning', // Bisa 'success', 'error', 'info', 'question'
+                            showCancelButton: true,
+                            confirmButtonColor: '#e879a0', // Warna pink yang cocok dengan tema Anda
+                            cancelButtonColor: '#6c757d', // Warna abu-abu untuk tombol batal
+                            confirmButtonText: 'Ya, Logout!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Jika user mengklik 'Ya, Logout!', submit form
+                                this.submit();
+                            }
+                        });
+                    });
+                }
+            });
         </script>
     @endpush
 @endsection

@@ -11,7 +11,7 @@ class Produk extends Model
 
     protected $table = 'produk';
     protected $primaryKey = 'kode_produk';
-    // public $timestamps = false;
+    public $timestamps = false; // ⛔ Nonaktifkan created_at & updated_at
 
     protected $fillable = [
         'nama_produk',
@@ -19,7 +19,8 @@ class Produk extends Model
         'harga',
         'stok',
         'deskripsi',
-        'gambar'
+        'gambar',
+        'status'
     ];
 
     public function kategori()

@@ -154,33 +154,13 @@
                     @auth('pelanggan')
                         {{-- Jika pelanggan sudah login --}}
                         <div class="relative group">
-                            <button
+                            <a href="{{ url('/profil-pelanggan') }}"
                                 class="bg-lily-pink-dark text-white px-6 py-2 rounded-full hover:bg-lily-pink transition duration-300 font-bold flex items-center space-x-2">
-                                <span>{{ Str::limit(Auth::guard('pelanggan')->user()->nama_pelanggan, 12) }}</span> {{--
-                                Ambil nama_pelanggan, batasi jika terlalu panjang --}}
-                                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                                    fill="currentColor">
-                                    <path fill-rule="evenodd"
-                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                        clip-rule="evenodd" />
+                                <span>{{ Str::limit(Auth::guard('pelanggan')->user()->nama_pelanggan, 12) }}</span>
+                                <svg class="w-8 h-6" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+                                  <path fill-rule="evenodd" d="M12 2a5 5 0 100 10 5 5 0 000-10zm-7 18a7 7 0 0114 0H5z" clip-rule="evenodd" />
                                 </svg>
-                            </button>
-                            {{-- Dropdown Menu untuk Pengguna yang Login --}}
-                            <div
-                                class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden group-hover:block ring-1 ring-black ring-opacity-5">
-                                <a href="{{ url('/profil-pelanggan') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profil Saya</a>
-                                {{-- TODO: Ganti href dengan rute profil --}}
-                                <a href="{{ url('/pesanan') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Pesanan Saya</a>
-                                {{-- TODO: Ganti href dengan rute pesanan --}}
-                                <div class="border-t border-gray-100"></div>
-                                <form method="POST" action="{{ route('pelanggan.logout') }}" class="block">
-                                    @csrf
-                                    <button type="submit"
-                                        class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                        Logout
-                                    </button>
-                                </form>
-                            </div>
+                            </a>
                         </div>
                     @else
                         {{-- Jika pengguna adalah tamu (belum login) --}}
@@ -267,31 +247,17 @@
             @auth('pelanggan')
                 {{-- Jika pelanggan sudah login (Mobile) --}}
                 {{-- Jika pelanggan sudah login --}}
-                <div class="relative group"> {{-- Parent 'group' untuk hover --}}
-                    <button
+                <div class="relative group">
+                    <a href="{{ url('/profil-pelanggan') }}"
                         class="bg-lily-pink-dark text-white px-6 py-2 rounded-full hover:bg-lily-pink transition duration-300 font-bold flex items-center space-x-2">
                         <span>{{ Str::limit(Auth::guard('pelanggan')->user()->nama_pelanggan, 12) }}</span>
-                        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                            fill="currentColor">
                             <path fill-rule="evenodd"
                                 d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                                 clip-rule="evenodd" />
                         </svg>
-                    </button>
-                    {{-- Dropdown Menu untuk Pengguna yang Login --}}
-                    <div id="profile-dropdown-menu"
-                        class="absolute right-0 mt-1 w-48 bg-white rounded-md shadow-lg py-1 z-50 ring-1 ring-black ring-opacity-5">
-                        {{-- ID ditambahkan, mt-2 jadi mt-1 --}}
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profil Saya</a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Pesanan Saya</a>
-                        <div class="border-t border-gray-100"></div>
-                        <form method="POST" action="{{ route('pelanggan.logout') }}" class="block">
-                            @csrf
-                            <button type="submit"
-                                class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                Logout
-                            </button>
-                        </form>
-                    </div>
+                    </a>
                 </div>
             @else
                 {{-- Jika pengguna adalah tamu (belum login) (Mobile) --}}

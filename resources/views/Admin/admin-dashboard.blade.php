@@ -18,7 +18,7 @@
                     {{-- Dashboard Link (Active State) --}}
                     <a href="{{ route('admin.dashboard') }}" class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]
                     @if(Request::routeIs('admin.dashboard')) bg-[#F9D8D9] text-gray-900 font-semibold @endif">
-                        {{-- ICON DIKEMBALIKAN SESUAI GAMBAR: Dashboard = Check Circle --}}
+                    {{-- ICON DIKEMBALIKAN SESUAI GAMBAR: Dashboard = Check Circle --}}
                         <i class="far fa-check-circle mr-3 text-xl"></i>
                         <span>Dashboard</span>
                     </a>
@@ -51,6 +51,16 @@
                         <i class="fas fa-cog mr-3 text-xl"></i>
                         <span>Setting</span>
                     </a>
+
+                    {{-- Logout Button with Confirmation --}}
+                    {{-- Logout Button with SweetAlert Confirmation --}}
+                    <form id="logout-form" method="POST" action="{{ route('admin.logout') }}" class="block w-full">
+                        @csrf
+                        <button type="submit" class="flex items-center w-full px-6 py-3 rounded-md text-gray-700 hover:bg-red-100 hover:text-red-700">
+                            <i class="fas fa-sign-out-alt mr-3 text-xl"></i>
+                            <span>Logout</span>
+                        </button>
+                    </form>
                 </nav>
             </div>
 
@@ -163,6 +173,7 @@
 
     @push('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const ctx = document.getElementById('weeklySalesChart').getContext('2d');
@@ -207,6 +218,31 @@
                     maintainAspectRatio: false
                 }
             });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // --- Konfirmasi Logout dengan SweetAlert2 ---
+            const logoutForm = document.getElementById('logout-form');
+            if (logoutForm) {
+                logoutForm.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Mencegah form disubmit secara default
+
+                    Swal.fire({
+                        title: 'Apakah Anda yakin?',
+                        text: "Anda akan keluar dari sesi admin ini!",
+                        icon: 'warning', // Bisa 'success', 'error', 'info', 'question'
+                        showCancelButton: true,
+                        confirmButtonColor: '#e879a0', // Warna pink yang cocok dengan tema Anda
+                        cancelButtonColor: '#6c757d', // Warna abu-abu untuk tombol batal
+                        confirmButtonText: 'Ya, Logout!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Jika user mengklik 'Ya, Logout!', submit form
+                            this.submit();
+                        }
+                    });
+                });
+            }
         });
     </script>
     @endpush

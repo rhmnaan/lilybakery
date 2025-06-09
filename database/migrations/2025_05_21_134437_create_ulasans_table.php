@@ -6,19 +6,30 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
-        Schema::create('ulasan', function (Blueprint $table) {
-            $table->id('id_ulasan');
-            $table->foreignId('id_pelanggan')->nullable()->constrained('pelanggan', 'id_pelanggan');
-            $table->foreignId('kode_produk')->nullable()->constrained('produk', 'kode_produk');
-            $table->integer('rating')->nullable();
-            $table->timestamp('tanggal')->useCurrent();
+        Schema::create('ulasans', function (Blueprint $table) {
+            $table->increments('id_ulasan');
+            $table->unsignedInteger('id_produk');
+            $table->unsignedInteger('id_pelanggan');
+            // TAMBAHKAN KOLOM INI
+            $table->tinyInteger('rating')->unsigned()->comment('Rating dari 1 sampai 5');
+            $table->text('komentar');
+            $table->timestamps();
+
+            $table->foreign('id_produk')->references('id_produk')->on('produks')->onDelete('cascade');
+            $table->foreign('id_pelanggan')->references('id_pelanggan')->on('pelanggans')->onDelete('cascade');
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
-        Schema::dropIfExists('ulasan');
+        Schema::dropIfExists('ulasans');
     }
 };

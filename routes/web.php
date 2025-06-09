@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\PelangganLoginController;
-use App\Http\Controllers\Auth\AdminLoginController; // Pastikan ini diimpor
+use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\StoreLocationController;
 use App\Http\Controllers\PelangganProfileController;
 use App\Http\Controllers\PromoController;
@@ -17,6 +17,10 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ProdukController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PembayaranController;
+use App\Http\Controllers\UlasanController;
+
+use App\Http\Controllers\ProdukController as PublicProdukController;
+
 
 Route::get('/', [HomeController::class, 'index']);
 
@@ -86,17 +90,24 @@ Route::middleware(['auth:pelanggan'])->group(function () {
         return view('pelanggan.index'); // Jika filenya resources/views/pelanggan/index.blade.php
     })->name('pelanggan.dashboard');
 
+    // pesanan
+    Route::get('/pesanan', [PelangganOrderController::class, 'index'])->name('pesanan.index');
+    Route::post('/ulasan', [UlasanController::class, 'store'])->name('ulasan.store');
+
+
     // keranjang
     Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang.index');
     Route::post('/keranjang/tambah', [KeranjangController::class, 'tambahKeKeranjang'])->name('keranjang.tambah');
     Route::delete('/keranjang/hapus/{id_keranjang}', [KeranjangController::class, 'hapusDariKeranjang'])->name('keranjang.hapus');
     Route::patch('/keranjang/update/{id_keranjang}', [KeranjangController::class, 'updateKuantitas'])->name('keranjang.update');
 
-        Route::get('/order-info', [OrderController::class, 'orderInfo'])->name('order.info');
+    Route::get('/order-info', [OrderController::class, 'orderInfo'])->name('order.info');
     Route::post('/order-info/save', [OrderController::class, 'saveOrderInfo'])->name('order.save_info');
-    
+
     Route::get('/payment', [PembayaranController::class, 'show'])->name('payment.show');
     Route::post('/payment/process', [PembayaranController::class, 'process'])->name('payment.process');
+
+
 });
 
 // Profile routes for 'pelanggan' guard
@@ -178,9 +189,9 @@ Route::middleware(['auth:admin'])->group(function () {
 Route::get('/stores', [StoreLocationController::class, 'index'])->name('stores.index'); // New route
 
 // pesanan
-Route::get('/pesanan', function () {
-    return view('pesanan');
-});
+// Route::get('/pesanan', function () {
+//     return view('pesanan');
+// });
 
 // keranjang
 Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang.index');
@@ -191,6 +202,7 @@ Route::get('/orderinfo', [OrderController::class, 'orderInfo'])->name('order.inf
 
 
 // test produk
-Route::middleware('web')->group(function () {
-    Route::resource('produk', ProdukController::class);
-});
+// Route::middleware('web')->group(function () {
+//     Route::resource('produk', ProdukController::class);
+// });
+Route::get('/produk/{produk}', [PublicProdukController::class, 'show'])->name('produk.show');

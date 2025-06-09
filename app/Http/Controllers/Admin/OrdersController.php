@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
+use App\Models\HistoryOrder;
+
 class OrdersController extends Controller
 {
     /**
@@ -104,13 +106,10 @@ class OrdersController extends Controller
 
         try {
             DB::transaction(function () use ($request, $order) {
+                // ... (Logika untuk update detail order tetap sama)
                 $totalHarga = 0;
                 $details = [];
-
-                // Hapus detail lama
                 $order->detailOrder()->delete();
-
-                // Buat detail baru
                 foreach ($request->produk as $index => $kode_produk) {
                     $product = Produk::find($kode_produk);
                     $jumlah = $request->jumlah[$index];
@@ -122,7 +121,6 @@ class OrdersController extends Controller
                         'subtotal' => $subtotal,
                     ];
                 }
-
                 $order->detailOrder()->createMany($details);
 
                 // Update order utama
@@ -130,6 +128,22 @@ class OrdersController extends Controller
                     'total_harga' => $totalHarga,
                     'status' => $request->status,
                 ]);
+
+                // --- AWAL LOGIKA BARU UNTUK HISTORY ORDER ---
+                // Cek jika status baru adalah 'Selesai'
+                if ($request->status === 'Selesai') {
+                    // Gunakan updateOrCreate untuk membuat entri baru atau memperbarui yang sudah ada.
+                    // Ini mencegah duplikasi jika admin menyimpan status 'Selesai' lebih dari sekali.
+                    HistoryOrder::updateOrCreate(
+                        ['id_order' => $order->id_order], // Kunci untuk mencari
+                        ['tanggal_selesai' => now()]      // Data yang diisi atau diperbarui
+                    );
+                } else {
+                    // Jika status diubah dari 'Selesai' ke status lain, hapus dari history.
+                    $order->historyOrder()->delete();
+                }
+                // --- AKHIR LOGIKA BARU ---
+
             });
         } catch (\Exception $e) {
             return back()->with('error', 'Gagal memperbarui pesanan: ' . $e->getMessage())->withInput();

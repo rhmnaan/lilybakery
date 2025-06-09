@@ -124,12 +124,21 @@
                                                     {{ number_format($produk->harga, 0, ',', '.') }}
                                                 </p>
                                             </div>
+                                            {{-- Kode Baru dengan Bintang Dinamis --}}
                                             <div class="flex mb-4">
-                                                <i class="fas fa-star text-yellow-400"></i>
-                                                <i class="fas fa-star text-yellow-400"></i>
-                                                <i class="fas fa-star text-yellow-400"></i>
-                                                <i class="fas fa-star text-yellow-400"></i>
-                                                <i class="fas fa-star text-yellow-400"></i>
+                                                @php
+                                                    // Bulatkan rata-rata rating, default 0 jika belum ada rating
+                                                    $rating = round($produk->ulasan_avg_rating ?? 0);
+                                                @endphp
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    @if ($i <= $rating)
+                                                        {{-- Bintang Terisi --}}
+                                                        <i class="fas fa-star text-yellow-400"></i>
+                                                    @else
+                                                        {{-- Bintang Kosong --}}
+                                                        <i class="far fa-star text-gray-400"></i>
+                                                    @endif
+                                                @endfor
                                             </div>
                                             <form action="{{ route('keranjang.tambah') }}" method="POST">
                                                 @csrf
@@ -185,10 +194,10 @@
                 <p class="text-gray-600 mb-8">
                     Ingin menikmati kue idaman tanpa batas? Anda sendiri! Jangan khawatir!
                 </p>
-                <button
-                    class="bg-[#5E5C70] text-white px-6 py-2 rounded-md hover:bg-gray-800 transition duration-300 mb-12">
+                <a href="{{ route('custom-cakes.index') }}"
+                    class="bg-[#5E5C70] text-white px-6 py-2 rounded-md hover:bg-gray-800 transition duration-300 mb-12 inline-block">
                     Lihat Selengkapnya
-                </button>
+                </a>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <!-- Custom Option 1 -->

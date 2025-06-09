@@ -3,137 +3,50 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Kategori;
+use App\Models\Produk;
 
 class MenuController extends Controller
 {
     /**
-     * Menampilkan produk dan header berdasarkan kategori yang dipilih di URL.
-     * 
-     * @param string $category
+     * Menampilkan produk berdasarkan kategori yang dipilih di URL.
+     *
+     * @param string $categoryName
      * @return \Illuminate\View\View
      */
-    public function showCategory($category)
+    public function showCategory($categoryName)
     {
-        // Data produk per kategori
-        $products = [
-            'bread' => [
-                ['name' => 'Sourdough Bread', 'price' => 50000, 'rating' => 4, 'image_url' => '/images/menu/bread.jpg'],
-                ['name' => 'Whole Wheat Bread', 'price' => 45000, 'rating' => 5, 'image_url' => '/images/menu/bread.jpg'],
-            ],
-            'cake' => [
-                ['name' => 'Chocolate Cake', 'price' => 120000, 'rating' => 5, 'image_url' => '/images/menu/cake.jpg'],
-                ['name' => 'Vanilla Cake', 'price' => 110000, 'rating' => 4, 'image_url' => '/images/menu/cake.jpg'],
-            ],
-            'cookies' => [
-                ['name' => 'Chocolate Chip Cookie', 'price' => 25000, 'rating' => 4, 'image_url' => '/images/menu/cookies.jpg'],
-                ['name' => 'Oatmeal Cookie', 'price' => 20000, 'rating' => 3, 'image_url' => '/images/menu/cookies.jpg'],
-            ],
-            'donat' => [
-                ['name' => 'Glazed Donut', 'price' => 15000, 'rating' => 3, 'image_url' => '/images/menu/donat.jpg'],
-                ['name' => 'Chocolate Donut', 'price' => 18000, 'rating' => 4, 'image_url' => '/images/menu/donat.jpg'],
-            ],
-            'macaroon' => [
-                ['name' => 'Vanilla Macaroon', 'price' => 30000, 'rating' => 5, 'image_url' => '/images/menu/Macaroon.jpg'],
-                ['name' => 'Raspberry Macaroon', 'price' => 35000, 'rating' => 5, 'image_url' => '/images/menu/Macaroon.jpg'],
-            ],
-        ];
+        // Cari kategori di database berdasarkan nama (slug)
+        $kategori = Kategori::where('nama_kategori', 'like', str_replace('-', ' ', $categoryName))->firstOrFail();
 
-        // Data header (judul dan subtitle) per kategori
-        $headers = [
-            'bread' => [
-                'title' => 'Delicious Bread Selection',
-                'subtitle' => 'Freshly baked bread to warm your heart'
-            ],
-            'cake' => [
-                'title' => 'Sweet and Moist Cakes',
-                'subtitle' => 'Perfect cakes for every celebration'
-            ],
-            'cookies' => [
-                'title' => 'Crunchy Cookies',
-                'subtitle' => 'Sweet snacks for your coffee break'
-            ],
-            'donat' => [
-                'title' => 'Delightful Donuts',
-                'subtitle' => 'Soft and fluffy donuts with various toppings'
-            ],
-            'macaroon' => [
-                'title' => 'Colorful Macaroons',
-                'subtitle' => 'Taste the delicate French treats'
-            ],
-        ];
+        // Ambil semua produk yang aktif dari kategori tersebut
+        $products = Produk::where('id_kategori', $kategori->id_kategori)
+            ->where('status', 1) // Hanya tampilkan produk yang aktif
+            ->withAvg('ulasan', 'rating') // Ambil rata-rata rating
+            ->paginate(12); // Tampilkan 12 produk per halaman
 
-        // Validasi kategori
-        if (!array_key_exists($category, $products)) {
-            abort(404); // Halaman 404 jika kategori tidak ditemukan
-        }
+        // Siapkan data header untuk view
+        $header = [
+            'title' => 'Koleksi ' . $kategori->nama_kategori,
+            'subtitle' => 'Temukan ' . strtolower($kategori->nama_kategori) . ' favorit Anda di sini.'
+        ];
 
         // Kirim data ke view
         return view('category-menu', [
-            'category' => $category,
-            'products' => $products[$category],
-            'header' => $headers[$category] ?? ['title' => 'Menu', 'subtitle' => 'Our delicious menu'],
+            'category' => $kategori->nama_kategori,
+            'products' => $products,
+            'header' => $header,
         ]);
     }
 
     /**
-     * Menampilkan detail produk berdasarkan kategori dan nama produk.
-     * 
-     * @param string $category
-     * @param string $productName (slug, misal: sourdough-bread)
-     * @return \Illuminate\View\View
+     * Metode ini tidak lagi diperlukan karena sudah ditangani oleh ProdukController,
+     * namun bisa dibiarkan kosong atau dihapus.
      */
     public function showProductDetail($category, $productName)
     {
-        // Sama data produk seperti di showCategory
-        $products = [
-            'bread' => [
-                ['name' => 'Sourdough Bread', 'price' => 50000, 'rating' => 4, 'image_url' => '/images/menu/bread.jpg', 'description' => 'Delicious sourdough bread with crispy crust and soft inside.'],
-                ['name' => 'Whole Wheat Bread', 'price' => 45000, 'rating' => 5, 'image_url' => '/images/menu/bread.jpg', 'description' => 'Healthy whole wheat bread rich in fiber and nutrients.'],
-            ],
-            'cake' => [
-                ['name' => 'Chocolate Cake', 'price' => 120000, 'rating' => 5, 'image_url' => '/images/menu/cake.jpg', 'description' => 'Rich and moist chocolate cake perfect for celebrations.'],
-                ['name' => 'Vanilla Cake', 'price' => 110000, 'rating' => 4, 'image_url' => '/images/menu/cake.jpg', 'description' => 'Classic vanilla cake with creamy frosting.'],
-            ],
-            'cookies' => [
-                ['name' => 'Chocolate Chip Cookie', 'price' => 25000, 'rating' => 4, 'image_url' => '/images/menu/cookies.jpg', 'description' => 'Crunchy cookies loaded with chocolate chips.'],
-                ['name' => 'Oatmeal Cookie', 'price' => 20000, 'rating' => 3, 'image_url' => '/images/menu/cookies.jpg', 'description' => 'Soft oatmeal cookies with a hint of cinnamon.'],
-            ],
-            'donat' => [
-                ['name' => 'Glazed Donut', 'price' => 15000, 'rating' => 3, 'image_url' => '/images/menu/donat.jpg', 'description' => 'Sweet glazed donut with soft texture.'],
-                ['name' => 'Chocolate Donut', 'price' => 18000, 'rating' => 4, 'image_url' => '/images/menu/donat.jpg', 'description' => 'Donut topped with rich chocolate glaze.'],
-            ],
-            'macaroon' => [
-                ['name' => 'Vanilla Macaroon', 'price' => 30000, 'rating' => 5, 'image_url' => '/images/menu/Macaroon.jpg', 'description' => 'Delicate vanilla flavored French macaroon.'],
-                ['name' => 'Raspberry Macaroon', 'price' => 35000, 'rating' => 5, 'image_url' => '/images/menu/Macaroon.jpg', 'description' => 'Tangy raspberry macaroon with smooth filling.'],
-            ],
-        ];
-
-        // Validasi kategori
-        if (!array_key_exists($category, $products)) {
-            abort(404);
-        }
-
-        // Cari produk sesuai slug $productName
-        $slugToName = function ($name) {
-            return strtolower(str_replace(' ', '-', $name));
-        };
-
-        $product = null;
-        foreach ($products[$category] as $item) {
-            if ($slugToName($item['name']) === $productName) {
-                $product = $item;
-                break;
-            }
-        }
-
-        if (!$product) {
-            abort(404);
-        }
-
-        // Kirim ke view product-detail
-        return view('product-detail', [
-            'category' => $category,
-            'product' => $product,
-        ]);
+        // Logika ini sekarang ditangani oleh ProdukController@show
+        // Redirect atau abort
+        return redirect()->route('home');
     }
 }

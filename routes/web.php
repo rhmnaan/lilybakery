@@ -18,6 +18,8 @@ use App\Http\Controllers\Admin\ProdukController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\UlasanController;
+use App\Http\Controllers\MenuController;
+use App\Http\Controllers\CustomCakeController;
 
 use App\Http\Controllers\ProdukController as PublicProdukController;
 
@@ -107,6 +109,8 @@ Route::middleware(['auth:pelanggan'])->group(function () {
     Route::get('/payment', [PembayaranController::class, 'show'])->name('payment.show');
     Route::post('/payment/process', [PembayaranController::class, 'process'])->name('payment.process');
 
+    // Rute untuk buy now
+    Route::post('/buy-now', [OrderController::class, 'buyNow'])->name('order.buyNow');
 
 });
 
@@ -188,10 +192,6 @@ Route::middleware(['auth:admin'])->group(function () {
 // Rute untuk lokasi toko
 Route::get('/stores', [StoreLocationController::class, 'index'])->name('stores.index'); // New route
 
-// pesanan
-// Route::get('/pesanan', function () {
-//     return view('pesanan');
-// });
 
 // keranjang
 Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang.index');
@@ -199,10 +199,10 @@ Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang
 // order info
 Route::get('/orderinfo', [OrderController::class, 'orderInfo'])->name('order.info');
 
-
-
-// test produk
-// Route::middleware('web')->group(function () {
-//     Route::resource('produk', ProdukController::class);
-// });
 Route::get('/produk/{produk}', [PublicProdukController::class, 'show'])->name('produk.show');
+
+// Rute untuk kategori produk
+Route::get('/menu/{category}', [MenuController::class, 'showCategory'])->name('menu.category');
+// Rute untuk menampilkan semua produk
+Route::get('/custom-cakes', [CustomCakeController::class, 'index'])->name('custom-cakes.index');
+

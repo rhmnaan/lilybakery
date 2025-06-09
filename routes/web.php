@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ProdukController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PembayaranController;
 
 Route::get('/', [HomeController::class, 'index']);
 
@@ -91,6 +92,11 @@ Route::middleware(['auth:pelanggan'])->group(function () {
     Route::delete('/keranjang/hapus/{id_keranjang}', [KeranjangController::class, 'hapusDariKeranjang'])->name('keranjang.hapus');
     Route::patch('/keranjang/update/{id_keranjang}', [KeranjangController::class, 'updateKuantitas'])->name('keranjang.update');
 
+        Route::get('/order-info', [OrderController::class, 'orderInfo'])->name('order.info');
+    Route::post('/order-info/save', [OrderController::class, 'saveOrderInfo'])->name('order.save_info');
+    
+    Route::get('/payment', [PembayaranController::class, 'show'])->name('payment.show');
+    Route::post('/payment/process', [PembayaranController::class, 'process'])->name('payment.process');
 });
 
 // Profile routes for 'pelanggan' guard

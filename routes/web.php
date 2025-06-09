@@ -15,10 +15,9 @@ use App\Http\Controllers\Admin\OrdersController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ProdukController;
+use App\Http\Controllers\HomeController;
 
-Route::get('/', function () {
-    return view('index');
-});
+Route::get('/', [HomeController::class, 'index']);
 
 Route::get('/about-us', function () {
     return view('about-us');
@@ -85,6 +84,13 @@ Route::middleware(['auth:pelanggan'])->group(function () {
     Route::get('/pelanggan/dashboard', function () {
         return view('pelanggan.index'); // Jika filenya resources/views/pelanggan/index.blade.php
     })->name('pelanggan.dashboard');
+
+    // keranjang
+    Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang.index');
+    Route::post('/keranjang/tambah', [KeranjangController::class, 'tambahKeKeranjang'])->name('keranjang.tambah');
+    Route::delete('/keranjang/hapus/{id_keranjang}', [KeranjangController::class, 'hapusDariKeranjang'])->name('keranjang.hapus');
+    Route::patch('/keranjang/update/{id_keranjang}', [KeranjangController::class, 'updateKuantitas'])->name('keranjang.update');
+
 });
 
 // Profile routes for 'pelanggan' guard
@@ -146,9 +152,19 @@ Route::middleware(['auth:admin'])->group(function () {
         Route::delete('/orders/{order}', [OrdersController::class, 'destroy'])->name('orders.destroy');
 
         // admin setting
-        Route::get('/setting', function () {
-            return view('Admin.admin-setting'); // Sesuaikan path view jika berbeda
-        })->name('setting');
+        // Route::get('/setting', function () {
+        //     return view('Admin.admin-setting'); // Sesuaikan path view jika berbeda
+        // })->name('setting');
+        // --- Rute untuk Halaman Setting ---
+        Route::get('/settings', [SettingController::class, 'index'])->name('settings');
+        Route::get('/settings', [SettingController::class, 'index'])->name('settings');
+        Route::put('/settings/main-admin-password/{id}', [SettingController::class, 'updateMainAdminPassword'])->name('settings.updateMainAdminPassword');
+
+        // Rute untuk manajemen admin lain (CRUD)
+        Route::post('/settings/admins', [SettingController::class, 'storeAdmin'])->name('settings.storeAdmin');
+        Route::get('/settings/admins/{id}/edit', [SettingController::class, 'edit'])->name('settings.editAdmin'); // <-- ROUTE BARU
+        Route::put('/settings/admins/{id}', [SettingController::class, 'updateAdmin'])->name('settings.updateAdmin');
+        Route::delete('/settings/admins/{id}', [SettingController::class, 'destroyAdmin'])->name('settings.destroyAdmin');
     });
 });
 

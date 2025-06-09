@@ -20,9 +20,24 @@ class OrdersController extends Controller
     public function index(Request $request)
     {
         $statusFilter = $request->query('status', 'all');
+        $dateFilter = $request->query('date_filter');
+        $startDate = $request->query('start_date');
+        $endDate = $request->query('end_date');
 
         $query = Order::with(['pelanggan', 'detailOrder.produk'])
             ->orderBy('tanggal_order', 'desc');
+
+        // --- AWAL LOGIKA FILTER TANGGAL ---
+        if ($dateFilter === 'today') {
+            $query->whereDate('tanggal_order', Carbon::today());
+        } elseif ($dateFilter === 'this_week') {
+            $query->whereBetween('tanggal_order', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]);
+        } elseif ($dateFilter === 'this_month') {
+            $query->whereMonth('tanggal_order', Carbon::now()->month)->whereYear('tanggal_order', Carbon::now()->year);
+        } elseif ($startDate && $endDate) {
+            $query->whereBetween('tanggal_order', [Carbon::parse($startDate)->startOfDay(), Carbon::parse($endDate)->endOfDay()]);
+        }
+        // --- AKHIR LOGIKA FILTER TANGGAL ---
 
         if ($statusFilter !== 'all') {
             $query->where('status', $statusFilter);
@@ -33,7 +48,10 @@ class OrdersController extends Controller
         $produk = Produk::where('status', true)->orderBy('nama_produk')->get();
         $pelanggans = Pelanggan::orderBy('nama_pelanggan')->get();
 
-        return view('admin.orders', compact('orders', 'produk', 'pelanggans', 'statusFilter'));
+        // Kirim filter aktif ke view agar tombol bisa diberi style
+        $activeDateFilter = $dateFilter ?: ($startDate ? 'custom' : 'all');
+
+        return view('admin.orders', compact('orders', 'produk', 'pelanggans', 'statusFilter', 'activeDateFilter', 'startDate', 'endDate'));
     }
 
     /**

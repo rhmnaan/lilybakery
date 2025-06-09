@@ -9,19 +9,24 @@ use Illuminate\Support\Facades\Hash;
 
 class CustomerController extends Controller
 {
+    /**
+     * Menampilkan halaman daftar pelanggan.
+     */
     public function index()
-{
-    $customers = \App\Models\Pelanggan::all();
+    {
+        // Mengambil semua data pelanggan
+        $customers = \App\Models\Pelanggan::orderBy('nama_pelanggan', 'asc')->get();
+        
+        // Menghitung total pelanggan
+        $totalCount = $customers->count();
 
-    $activeCount   = $customers->where('status', 'active')->count();
-    $inactiveCount = $customers->where('status', 'inactive')->count();
-    $totalCount    = $customers->count();
+        // Mengirim data ke view
+        return view('admin.customers', compact('customers', 'totalCount'));
+    }
 
-    return view('admin.customers', compact(
-        'customers', 'activeCount', 'inactiveCount', 'totalCount'
-    ));
-}
-
+    /**
+     * Menyimpan pelanggan baru.
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -40,11 +45,15 @@ class CustomerController extends Controller
             'password'       => Hash::make($request->password),
             'jenis_kelamin'  => $request->gender,
             'alamat'         => $request->address,
+            // Kolom status tidak lagi diisi secara eksplisit
         ]);
 
         return redirect()->route('admin.customers')->with('success', 'Pelanggan berhasil ditambahkan.');
     }
 
+    /**
+     * Menghapus pelanggan.
+     */
     public function destroy($id)
     {
         $customer = Pelanggan::findOrFail($id);

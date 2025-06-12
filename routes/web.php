@@ -20,11 +20,18 @@ use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\UlasanController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CustomCakeController;
+use App\Http\Controllers\Admin\PromoController as AdminPromoController;
+use App\Http\Controllers\MidtransWebhookController;
+
 
 use App\Http\Controllers\ProdukController as PublicProdukController;
 
 
 Route::get('/', [HomeController::class, 'index']);
+
+// Rute untuk 
+Route::post('/midtrans/webhook', [MidtransWebhookController::class, 'handle']);
+
 
 Route::get('/about-us', function () {
     return view('about-us');
@@ -33,7 +40,7 @@ Route::get('/about-us', function () {
 Route::get('/promotion', function () {
     return view('promotion');
 });
-Route::get('/promotion', [PromoController::class, 'index'])->name('promotion.index');
+// Route::get('/promotion', action: [PromoController::class, 'index'])->name('promotion.index');
 
 Route::get('/privacy-policy', function () {
     return view('privacy-policy');
@@ -155,14 +162,19 @@ Route::middleware(['auth:admin'])->group(function () {
         Route::delete('/settings/admins/{id}', [SettingController::class, 'destroyAdmin'])->name('settings.destroyAdmin');
 
         // admin product
-        // Route::get('/product', function () {
-        //     return view('Admin.admin-product'); // Sesuaikan path view jika berbeda
-        // })->name('product');
         Route::get('product', [ProdukController::class, 'index'])->name('product'); // Ganti nama route
         Route::post('product', [ProdukController::class, 'store'])->name('product.store');
         Route::get('product/{produk}/edit', [ProdukController::class, 'edit'])->name('product.edit');
         Route::put('product/{produk}', [ProdukController::class, 'update'])->name('product.update');
         Route::delete('product/{produk}', [ProdukController::class, 'destroy'])->name('product.destroy');
+
+        // admin promosi
+        Route::post('/promotions', [AdminPromoController::class, 'store'])->name('promo.store');
+        Route::resource('promotions', AdminPromoController::class)->only([
+            'store',
+            'update',
+            'destroy'
+        ])->names('promo');
 
         // orders
         Route::get('/orders', [OrdersController::class, 'index'])->name('orders');

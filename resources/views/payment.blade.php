@@ -119,35 +119,28 @@ if ($__empty_1): ?>
           <form id="payment-form">
             <div id="payment-options" class="grid grid-cols-4 gap-4">
               <?php
-// Daftar pembayaran sesuai gambar dan urutan yang diminta
-$payments = [
-  ['value' => 'bni_va', 'alt' => 'BNI VA', 'src' => 'bniLogo.png'],
-  ['value' => 'dana', 'alt' => 'DANA', 'src' => 'logoDana.png'],
-  ['value' => 'shopeepay', 'alt' => 'ShopeePay', 'src' => 'logoShoopePay.png'],
-  ['value' => 'bri_va', 'alt' => 'BRI VA', 'src' => 'logoBRI.png'],
-  // OVO menggunakan QRIS sebagai metode pembayaran di backend
-  ['value' => 'qris', 'alt' => 'OVO (via QRIS)', 'src' => 'logoOVO.png'],
-  ['value' => 'qris', 'alt' => 'QRIS', 'src' => 'logoQRIS.png'],
-  ['value' => 'bca_va', 'alt' => 'BCA VA', 'src' => 'logoBCA.png'],
-  ['value' => 'gopay', 'alt' => 'GoPay', 'src' => 'logoGopay.png'],
-];
-                            ?>
-              <?php $__currentLoopData = $payments;
-$__env->addLoop($__currentLoopData);
-foreach ($__currentLoopData as $payment):
-  $__env->incrementLoopIndices();
-  $loop = $__env->getLastLoop(); ?>
-              <div class="payment-option" data-method="<?php  echo e($payment['value']); ?>">
-                <input type="radio" id="payment-<?php  echo e($payment['value'] . '-' . $loop->index); ?>"
-                  name="payment_method" value="<?php  echo e($payment['value']); ?>" />
-                <label for="payment-<?php  echo e($payment['value'] . '-' . $loop->index); ?>">
-                  <img src="<?php  echo e(asset('images/payment/' . $payment['src'])); ?>"
-                    alt="<?php  echo e($payment['alt']); ?>" />
+                // Daftar pembayaran disesuaikan dengan value payment_type di Midtrans
+                $payments = [
+                  ['value' => 'bni_va', 'alt' => 'BNI VA', 'src' => 'bniLogo.png'],
+                  ['value' => 'dana', 'alt' => 'DANA', 'src' => 'logoDana.png'],
+                  ['value' => 'shopeepay', 'alt' => 'ShopeePay', 'src' => 'logoShoopePay.png'],
+                  ['value' => 'bri_va', 'alt' => 'BRI VA', 'src' => 'logoBRI.png'],
+                  ['value' => 'qris', 'alt' => 'OVO (via QRIS)', 'src' => 'logoOVO.png'],
+                  ['value' => 'qris', 'alt' => 'QRIS', 'src' => 'logoQRIS.png'],
+                  ['value' => 'bca_va', 'alt' => 'BCA VA', 'src' => 'logoBCA.png'],
+                  ['value' => 'gopay', 'alt' => 'GoPay', 'src' => 'logoGopay.png'],
+                ];
+              ?>
+              @foreach ($payments as $payment)
+              <div class="payment-option" data-method="{{ $payment['value'] }}">
+                <input type="radio" id="payment-{{ $payment['value'] . '-' . $loop->index }}"
+                  name="payment_method" value="{{ $payment['value'] }}" />
+                <label for="payment-{{ $payment['value'] . '-' . $loop->index }}">
+                  <img src="{{ asset('images/payment/' . $payment['src']) }}"
+                    alt="{{ $payment['alt'] }}" />
                 </label>
               </div>
-              <?php endforeach;
-$__env->popLoop();
-$loop = $__env->getLastLoop(); ?>
+              @endforeach
             </div>
           </form>
         </div>
@@ -222,62 +215,66 @@ $loop = $__env->getLastLoop(); ?>
 
     // === FUNGSI YANG DIPERBARUI untuk menangani e-wallet lain ===
     function handlePaymentResponse(response) {
-      const modal = document.getElementById('paymentModal');
-      const title = document.getElementById('paymentModalTitle');
-      const content = document.getElementById('paymentModalContent');
-      content.innerHTML = ''; // Kosongkan konten sebelumnya
+        const modal = document.getElementById('paymentModal');
+        const title = document.getElementById('paymentModalTitle');
+        const content = document.getElementById('paymentModalContent');
+        content.innerHTML = ''; // Kosongkan konten sebelumnya
 
-      const gross_amount = `Rp ${parseInt(response.gross_amount).toLocaleString('id-ID')}`;
+        const gross_amount = `Rp ${parseInt(response.gross_amount).toLocaleString('id-ID')}`;
 
-      if (response.payment_type === 'qris') {
-        title.innerText = 'Scan QRIS untuk Membayar';
-        const qrCodeUrl = response.actions.find(a => a.name === 'generate-qr-code')?.url;
-        content.innerHTML = `
+        // QRIS (Untuk OVO, QRIS, dll)
+        if (response.payment_type === 'qris') {
+            title.innerText = 'Scan QRIS untuk Membayar';
+            const qrCodeUrl = response.actions.find(a => a.name === 'generate-qr-code')?.url;
+            content.innerHTML = `
                 <p class="mb-2 text-sm">Scan kode QR ini menggunakan aplikasi bank atau e-wallet apa pun.</p>
                 <img src="${qrCodeUrl}" alt="QR Code" class="mx-auto w-48 h-48 my-4">
-                <p class="font-bold text-lg">Total: ${gross_amount}</p>
-            `;
-      } else if (response.payment_type === 'bank_transfer') {
-        const va = response.va_numbers[0];
-        title.innerText = `Pembayaran via ${va.bank.toUpperCase()} Virtual Account`;
-        content.innerHTML = `
+                <p class="font-bold text-lg">Total: ${gross_amount}</p>`;
+        }
+        // Bank Transfer (VA)
+        else if (response.payment_type === 'bank_transfer') {
+            const va = response.va_numbers[0];
+            title.innerText = `Pembayaran via ${va.bank.toUpperCase()} Virtual Account`;
+            content.innerHTML = `
                 <p class="mb-2 text-sm">Selesaikan pembayaran ke nomor Virtual Account berikut:</p>
                 <div class="bg-gray-100 p-3 rounded-lg flex items-center justify-between my-4">
                     <span class="text-xl font-mono">${va.va_number}</span>
                     <button onclick="copyToClipboard('${va.va_number}')" class="text-sm bg-gray-300 px-3 py-1 rounded-md">Salin</button>
                 </div>
-                 <p class="font-bold text-lg">Total: ${gross_amount}</p>
-            `;
-      } else if (['gopay', 'shopeepay', 'dana'].includes(response.payment_type)) {
-        const paymentName = response.payment_type.charAt(0).toUpperCase() + response.payment_type.slice(1);
-        title.innerText = `Pembayaran dengan ${paymentName}`;
-
-        const qrCodeUrl = response.actions.find(a => a.name === 'generate-qr-code')?.url;
-        const deeplinkUrl = response.actions.find(a => ['deeplink-redirect', 'deeplink-payment-url'].includes(a.name))?.url;
-
-        let contentHTML = `<p class="mb-2 text-sm">Scan kode QR di aplikasi ${paymentName} atau klik tombol di bawah.</p>`;
-        if (qrCodeUrl) {
-          contentHTML += `<img src="${qrCodeUrl}" alt="QR Code ${paymentName}" class="mx-auto w-48 h-48 my-4">`;
+                 <p class="font-bold text-lg">Total: ${gross_amount}</p>`;
         }
-        if (deeplinkUrl) {
-          contentHTML += `<a href="${deeplinkUrl}" target="_blank" class="block w-full mt-4 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">Buka Aplikasi ${paymentName}</a>`;
-        }
-        contentHTML += `<p class="mt-4 font-bold text-lg">Total: ${gross_amount}</p>`;
-        content.innerHTML = contentHTML;
-      }
+        // E-Wallet (GoPay, ShopeePay, DANA)
+        else if (['gopay', 'shopeepay', 'dana'].includes(response.payment_type)) {
+            const paymentName = response.payment_type.charAt(0).toUpperCase() + response.payment_type.slice(1);
+            title.innerText = `Pembayaran dengan ${paymentName}`;
 
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
+            const qrCodeUrl = response.actions.find(a => a.name === 'generate-qr-code')?.url;
+            const deeplinkUrl = response.actions.find(a => ['deeplink-redirect', 'deeplink-payment-url'].includes(a.name))?.url;
+
+            let contentHTML = `<p class="mb-2 text-sm">Scan kode QR di aplikasi ${paymentName} atau klik tombol di bawah.</p>`;
+            if (qrCodeUrl) {
+                contentHTML += `<img src="${qrCodeUrl}" alt="QR Code ${paymentName}" class="mx-auto w-48 h-48 my-4">`;
+            }
+            if (deeplinkUrl) {
+                contentHTML += `<a href="${deeplinkUrl}" target="_blank" class="block w-full mt-4 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">Buka Aplikasi ${paymentName}</a>`;
+            }
+            contentHTML += `<p class="mt-4 font-bold text-lg">Total: ${gross_amount}</p>`;
+            content.innerHTML = contentHTML;
+        }
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
     }
 
     function closePaymentModal() {
-      window.location.href = "<?php echo e(url('pesanan')); ?>?status=belum_bayar";
+        // Arahkan pengguna ke halaman daftar pesanan setelah menutup modal
+        window.location.href = "{{ url('pesanan') }}?status=belum_bayar";
     }
 
     function copyToClipboard(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        Swal.fire({ icon: 'success', title: 'Berhasil Disalin!', showConfirmButton: false, timer: 1500 });
-      });
+        navigator.clipboard.writeText(text).then(() => {
+            Swal.fire({ icon: 'success', title: 'Berhasil Disalin!', showConfirmButton: false, timer: 1500 });
+        });
     }
   </script>
 </body>

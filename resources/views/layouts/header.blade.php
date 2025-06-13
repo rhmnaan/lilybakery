@@ -62,9 +62,7 @@
         opacity: 1;
         transform: translateY(0);
         transition-delay: 0s;
-        /* Tidak ada penundaan saat muncul */
         visibility: visible;
-        /* Bisa dilihat & diklik */
     }
 </style>
 

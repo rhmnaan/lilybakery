@@ -17,8 +17,8 @@
                 <nav class="mt-2 space-y-1">
                     {{-- Dashboard Link (Active State) --}}
                     <a href="{{ route('admin.dashboard') }}" class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]
-                    @if(Request::routeIs('admin.dashboard')) bg-[#F9D8D9] text-gray-900 font-semibold @endif">
-                    {{-- ICON DIKEMBALIKAN SESUAI GAMBAR: Dashboard = Check Circle --}}
+                        @if(Request::routeIs('admin.dashboard')) bg-[#F9D8D9] text-gray-900 font-semibold @endif">
+                        {{-- ICON DIKEMBALIKAN SESUAI GAMBAR: Dashboard = Check Circle --}}
                         <i class="far fa-check-circle mr-3 text-xl"></i>
                         <span>Dashboard</span>
                     </a>
@@ -32,21 +32,25 @@
                     </a>
 
                     {{-- Orders --}}
-                    <a href="{{ route('admin.orders') }}" class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]">
+                    <a href="{{ route('admin.orders') }}"
+                        class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]">
                         {{-- ICON DIKEMBALIKAN SESUAI GAMBAR: Orders = User (Profil) --}}
-                        <i class="fas fa-shopping-bag mr-3 text-xl"></i> {{-- Changed icon to shopping-bag as it fits orders better --}}
+                        <i class="fas fa-shopping-bag mr-3 text-xl"></i> {{-- Changed icon to shopping-bag as it fits orders
+                        better --}}
                         <span>Orders</span>
                     </a>
 
                     {{-- Customers --}}
-                    <a href="{{ route('admin.customers') }}" class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]">
+                    <a href="{{ route('admin.customers') }}"
+                        class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]">
                         {{-- ICON DIKEMBALIKAN SESUAI GAMBAR: Customers = User (Profil) --}}
                         <i class="far fa-user mr-3 text-xl"></i>
                         <span>Customers</span>
                     </a>
 
                     {{-- Setting --}}
-                    <a href="{{ route('admin.settings') }}" class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]">
+                    <a href="{{ route('admin.settings') }}"
+                        class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]">
                         {{-- ICON TETAP SESUAI GAMBAR: Setting = Cog --}}
                         <i class="fas fa-cog mr-3 text-xl"></i>
                         <span>Setting</span>
@@ -75,28 +79,32 @@
                         {{-- Ikon statistik juga disesuaikan lagi --}}
                         <i class="fas fa-box-open text-4xl text-[#E59CAA] mb-2"></i>
                         <p class="text-lg text-gray-600">Total Produk</p>
-                        <p class="text-3xl font-bold text-gray-900">{{ $totalProduk ?? 'N/A' }} <span class="text-xl font-normal">item</span></p>
+                        <p class="text-3xl font-bold text-gray-900">{{ $totalProduk ?? 'N/A' }} <span
+                                class="text-xl font-normal">item</span></p>
                     </div>
 
                     {{-- Pesanan hari ini Card --}}
                     <div class="bg-[#FFF7F3] rounded-lg shadow-md p-6 flex flex-col items-center justify-center">
                         <i class="fas fa-shopping-cart text-4xl text-[#E59CAA] mb-2"></i>
                         <p class="text-lg text-gray-600">Pesanan hari ini</p>
-                        <p class="text-3xl font-bold text-gray-900">{{ $totalPesananHariIni ?? 'N/A' }} <span class="text-xl font-normal">pesanan</span></p>
+                        <p class="text-3xl font-bold text-gray-900">{{ $totalPesananHariIni ?? 'N/A' }} <span
+                                class="text-xl font-normal">pesanan</span></p>
                     </div>
 
                     {{-- Pendapatan Hari Ini Card --}}
                     <div class="bg-[#FFF7F3] rounded-lg shadow-md p-6 flex flex-col items-center justify-center">
                         <i class="fas fa-wallet text-4xl text-[#E59CAA] mb-2"></i>
                         <p class="text-lg text-gray-600">Pendapatan Hari Ini</p>
-                        <p class="text-2xl font-bold text-gray-900">Rp {{ number_format($totalPendapatanHariIni ?? 0, 0, ',', '.') }}</p>
+                        <p class="text-2xl font-bold text-gray-900">Rp
+                            {{ number_format($totalPendapatanHariIni ?? 0, 0, ',', '.') }}</p>
                     </div>
 
                     {{-- Pelanggan Terdaftar Card --}}
                     <div class="bg-[#FFF7F3] rounded-lg shadow-md p-6 flex flex-col items-center justify-center">
                         <i class="fas fa-user-friends text-4xl text-[#E59CAA] mb-2"></i>
                         <p class="text-lg text-gray-600">Pelanggan Terdaftar</p>
-                        <p class="text-3xl font-bold text-gray-900">{{ $totalPelanggan ?? 'N/A' }} <span class="text-xl font-normal">pelanggan</span></p>
+                        <p class="text-3xl font-bold text-gray-900">{{ $totalPelanggan ?? 'N/A' }} <span
+                                class="text-xl font-normal">pelanggan</span></p>
                     </div>
                 </div>
 
@@ -132,37 +140,31 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200">
-                                {{-- Rows for product data --}}
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Chocolate cake</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Rp 230.000</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">1200</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Rp 230.000.000</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Matcha Donut</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Rp 15.000</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">1200</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Rp 230.000.000</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Cheese Cake</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Rp 250.000</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">1100</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Rp 210.000.000</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Chocoberry Bread</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Rp 45.000</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">900</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Rp 190.000.000</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Blueberry Cake</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Rp 120.000</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">700</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Rp 140.000.000</td>
-                                </tr>
+                                <?php if (isset($produkTerlaris) && $produkTerlaris->count() > 0): ?>
+                                    <?php $__currentLoopData = $produkTerlaris; $__env->addLoop($__currentLoopData); foreach ($__currentLoopData as $produk): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                <?php echo e($produk->nama_produk); ?>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                                Rp<?php echo e(number_format($produk->harga, 0, ',', '.')); ?>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                                <?php echo e($produk->total_terjual); ?>
+                                            </td>
+                                            <?php $pendapatanPerProduk = $produk->harga * $produk->total_terjual; ?>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                                Rp<?php echo e(number_format($pendapatanPerProduk, 0, ',', '.')); ?>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="4" class="px-6 py-4 text-center text-gray-500">
+                                            Belum ada data penjualan produk.
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
@@ -172,78 +174,76 @@
     </div>
 
     @push('scripts')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const ctx = document.getElementById('weeklySalesChart').getContext('2d');
-            const weeklySalesChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
-                    datasets: [{
-                        label: 'Penjualan',
-                        data: [100, 200, 150, 180, 400, 100, 200],
-                        borderColor: '#e879a0', // Warna garis pink
-                        backgroundColor: 'rgba(232, 121, 160, 0.1)', // Warna area bawah garis (transparan pink)
-                        borderWidth: 2,
-                        tension: 0.2, // Membuat garis sedikit melengkung
-                        pointBackgroundColor: '#e879a0', // Warna titik data
-                        pointBorderColor: '#ffffff', // Warna border titik data
-                        pointBorderWidth: 2,
-                        pointRadius: 4
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                display: true,
-                                color: 'rgba(0, 0, 0, 0.05)' // Garis grid Y yang samar
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const ctx = document.getElementById('weeklySalesChart').getContext('2d');
+                const weeklySalesChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+                        datasets: [{
+                            label: {{ Js::from($labelTitle ?? 'Penjualan Mingguan') }},
+                            data: {{ Js::from($data) }},
+                            borderColor: '#e879a0',
+                            backgroundColor: 'rgba(232, 121, 160, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.2,
+                            pointBackgroundColor: '#e879a0',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 2,
+                            pointRadius: 4
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    display: true,
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                }
                             }
                         },
-                        x: {
-                            grid: {
-                                display: false // Menghilangkan garis grid X
+                        plugins: {
+                            legend: {
+                                display: false
                             }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: false // Menghilangkan legend
-                        }
-                    },
-                    responsive: true,
-                    maintainAspectRatio: false
-                }
+                        },
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
             });
-        });
 
-        document.addEventListener('DOMContentLoaded', function () {
             // --- Konfirmasi Logout dengan SweetAlert2 ---
             const logoutForm = document.getElementById('logout-form');
             if (logoutForm) {
                 logoutForm.addEventListener('submit', function(event) {
                     event.preventDefault(); // Mencegah form disubmit secara default
 
-                    Swal.fire({
-                        title: 'Apakah Anda yakin?',
-                        text: "Anda akan keluar dari sesi admin ini!",
-                        icon: 'warning', // Bisa 'success', 'error', 'info', 'question'
-                        showCancelButton: true,
-                        confirmButtonColor: '#e879a0', // Warna pink yang cocok dengan tema Anda
-                        cancelButtonColor: '#6c757d', // Warna abu-abu untuk tombol batal
-                        confirmButtonText: 'Ya, Logout!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // Jika user mengklik 'Ya, Logout!', submit form
-                            this.submit();
-                        }
+                        Swal.fire({
+                            title: 'Apakah Anda yakin?',
+                            text: "Anda akan keluar dari sesi admin ini!",
+                            icon: 'warning', // Bisa 'success', 'error', 'info', 'question'
+                            showCancelButton: true,
+                            confirmButtonColor: '#e879a0', // Warna pink yang cocok dengan tema Anda
+                            cancelButtonColor: '#6c757d', // Warna abu-abu untuk tombol batal
+                            confirmButtonText: 'Ya, Logout!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Jika user mengklik 'Ya, Logout!', submit form
+                                this.submit();
+                            }
                     });
                 });
             }
-        });
-    </script>
+        </script>
+
     @endpush
 @endsection

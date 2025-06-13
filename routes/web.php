@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\PelangganLoginController;
-use App\Http\Controllers\Auth\AdminLoginController; // Pastikan ini diimpor
+use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\StoreLocationController;
 use App\Http\Controllers\PelangganProfileController;
 use App\Http\Controllers\PromoController;
@@ -15,10 +15,23 @@ use App\Http\Controllers\Admin\OrdersController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ProdukController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PembayaranController;
+use App\Http\Controllers\UlasanController;
+use App\Http\Controllers\MenuController;
+use App\Http\Controllers\CustomCakeController;
+use App\Http\Controllers\Admin\PromoController as AdminPromoController;
+use App\Http\Controllers\MidtransWebhookController;
 
-Route::get('/', function () {
-    return view('index');
-});
+
+use App\Http\Controllers\ProdukController as PublicProdukController;
+
+
+Route::get('/', [HomeController::class, 'index']);
+
+// Rute untuk 
+Route::post('/midtrans/webhook', [MidtransWebhookController::class, 'handle']);
+
 
 Route::get('/about-us', function () {
     return view('about-us');
@@ -27,7 +40,7 @@ Route::get('/about-us', function () {
 Route::get('/promotion', function () {
     return view('promotion');
 });
-Route::get('/promotion', [PromoController::class, 'index'])->name('promotion.index');
+// Route::get('/promotion', action: [PromoController::class, 'index'])->name('promotion.index');
 
 Route::get('/privacy-policy', function () {
     return view('privacy-policy');
@@ -85,6 +98,27 @@ Route::middleware(['auth:pelanggan'])->group(function () {
     Route::get('/pelanggan/dashboard', function () {
         return view('pelanggan.index'); // Jika filenya resources/views/pelanggan/index.blade.php
     })->name('pelanggan.dashboard');
+
+    // pesanan
+    Route::get('/pesanan', [PelangganOrderController::class, 'index'])->name('pesanan.index');
+    Route::post('/ulasan', [UlasanController::class, 'store'])->name('ulasan.store');
+
+
+    // keranjang
+    Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang.index');
+    Route::post('/keranjang/tambah', [KeranjangController::class, 'tambahKeKeranjang'])->name('keranjang.tambah');
+    Route::delete('/keranjang/hapus/{id_keranjang}', [KeranjangController::class, 'hapusDariKeranjang'])->name('keranjang.hapus');
+    Route::patch('/keranjang/update/{id_keranjang}', [KeranjangController::class, 'updateKuantitas'])->name('keranjang.update');
+
+    Route::get('/order-info', [OrderController::class, 'orderInfo'])->name('order.info');
+    Route::post('/order-info/save', [OrderController::class, 'saveOrderInfo'])->name('order.save_info');
+
+    Route::get('/payment', [PembayaranController::class, 'show'])->name('payment.show');
+    Route::post('/payment/process', [PembayaranController::class, 'process'])->name('payment.process');
+
+    // Rute untuk buy now
+    Route::post('/buy-now', [OrderController::class, 'buyNow'])->name('order.buyNow');
+
 });
 
 // Profile routes for 'pelanggan' guard
@@ -121,36 +155,55 @@ Route::middleware(['auth:admin'])->group(function () {
         // Rute untuk update password admin utama
         Route::put('/settings/main-admin-password/{id}', [SettingController::class, 'updateMainAdminPassword'])->name('settings.updateMainAdminPassword');
 
-       // Rute untuk manajemen admin lain (CRUD)
+        // Rute untuk manajemen admin lain (CRUD)
         Route::get('/settings/admins', [SettingController::class, 'getOtherAdmins'])->name('settings.getOtherAdmins'); // Untuk mendapatkan data awal
         Route::post('/settings/admins', [SettingController::class, 'storeAdmin'])->name('settings.storeAdmin');
         Route::put('/settings/admins/{id}', [SettingController::class, 'updateAdmin'])->name('settings.updateAdmin');
         Route::delete('/settings/admins/{id}', [SettingController::class, 'destroyAdmin'])->name('settings.destroyAdmin');
-        
+
         // admin product
-        // Route::get('/product', function () {
-        //     return view('Admin.admin-product'); // Sesuaikan path view jika berbeda
-        // })->name('product');
-    Route::get('product', [ProdukController::class, 'index'])->name('product'); // Ganti nama route
-    Route::post('product', [ProdukController::class, 'store'])->name('product.store');
-    Route::get('product/{produk}/edit', [ProdukController::class, 'edit'])->name('product.edit');
-    Route::put('product/{produk}', [ProdukController::class, 'update'])->name('product.update');
-    Route::delete('product/{produk}', [ProdukController::class, 'destroy'])->name('product.destroy');
+        Route::get('product', [ProdukController::class, 'index'])->name('product'); // Ganti nama route
+        Route::post('product', [ProdukController::class, 'store'])->name('product.store');
+        Route::get('product/{produk}/edit', [ProdukController::class, 'edit'])->name('product.edit');
+        Route::put('product/{produk}', [ProdukController::class, 'update'])->name('product.update');
+        Route::delete('product/{produk}', [ProdukController::class, 'destroy'])->name('product.destroy');
+
+        // admin promosi
+        Route::post('/promotions', [AdminPromoController::class, 'store'])->name('promo.store');
+        Route::resource('promotions', AdminPromoController::class)->only([
+            'store',
+            'update',
+            'destroy'
+        ])->names('promo');
+
+        // orders
+        Route::get('/orders', [OrdersController::class, 'index'])->name('orders');
+        Route::post('/orders', [OrdersController::class, 'store'])->name('orders.store'); // Ganti dari orders.store ke orders saja agar konsisten
+        Route::post('/orders/export', [OrdersController::class, 'exportData'])->name('orders.data'); // Ganti nama metode
+        Route::get('/orders/{order}/edit', [OrdersController::class, 'edit'])->name('orders.edit');
+        Route::put('/orders/{order}', [OrdersController::class, 'update'])->name('orders.update');
+        Route::delete('/orders/{order}', [OrdersController::class, 'destroy'])->name('orders.destroy');
 
         // admin setting
-        Route::get('/setting', function () {
-            return view('Admin.admin-setting'); // Sesuaikan path view jika berbeda
-        })->name('setting');
+        // Route::get('/setting', function () {
+        //     return view('Admin.admin-setting'); // Sesuaikan path view jika berbeda
+        // })->name('setting');
+        // --- Rute untuk Halaman Setting ---
+        Route::get('/settings', [SettingController::class, 'index'])->name('settings');
+        Route::get('/settings', [SettingController::class, 'index'])->name('settings');
+        Route::put('/settings/main-admin-password/{id}', [SettingController::class, 'updateMainAdminPassword'])->name('settings.updateMainAdminPassword');
+
+        // Rute untuk manajemen admin lain (CRUD)
+        Route::post('/settings/admins', [SettingController::class, 'storeAdmin'])->name('settings.storeAdmin');
+        Route::get('/settings/admins/{id}/edit', [SettingController::class, 'edit'])->name('settings.editAdmin'); // <-- ROUTE BARU
+        Route::put('/settings/admins/{id}', [SettingController::class, 'updateAdmin'])->name('settings.updateAdmin');
+        Route::delete('/settings/admins/{id}', [SettingController::class, 'destroyAdmin'])->name('settings.destroyAdmin');
     });
 });
 
 // Rute untuk lokasi toko
 Route::get('/stores', [StoreLocationController::class, 'index'])->name('stores.index'); // New route
 
-// pesanan
-Route::get('/pesanan', function () {
-    return view('pesanan');
-});
 
 // keranjang
 Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang.index');
@@ -158,9 +211,10 @@ Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang
 // order info
 Route::get('/orderinfo', [OrderController::class, 'orderInfo'])->name('order.info');
 
+Route::get('/produk/{produk}', [PublicProdukController::class, 'show'])->name('produk.show');
 
+// Rute untuk kategori produk
+Route::get('/menu/{category}', [MenuController::class, 'showCategory'])->name('menu.category');
+// Rute untuk menampilkan semua produk
+Route::get('/custom-cakes', [CustomCakeController::class, 'index'])->name('custom-cakes.index');
 
-// test produk
-Route::middleware('web')->group(function () {
-    Route::resource('produk', ProdukController::class);
-});

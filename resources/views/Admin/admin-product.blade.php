@@ -153,78 +153,129 @@
             {{-- Product List --}}
             <div class="grid grid-cols-1 gap-6 overflow-y-auto flex-grow pr-2">
                 @forelse($produks as $produk)
-                <div class="bg-[#FFF1EA] rounded-lg shadow-lg p-6 flex items-start space-x-6">
-                    <img src="{{ $produk->gambar ? asset($imagePath . $produk->gambar) : asset('images/placeholder.png') }}" alt="{{ $produk->nama_produk }}"
-                        class="w-36 h-36 md:w-48 md:h-48 object-cover rounded-lg flex-shrink-0">
-                    <div class="flex-1">
-                        <span class="text-xs px-2 py-1 rounded-full font-semibold {{ $produk->status ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800' }}">
-                            {{ $produk->status ? 'Aktif' : 'Non-Aktif' }}
-                        </span>
-                         @if($produk->promo)
-                            <span class="ml-2 text-xs px-2 py-1 rounded-full font-semibold bg-yellow-200 text-yellow-800">
-                                Promosi
+                    <div class="bg-[#FFF1EA] rounded-lg shadow-lg p-6 flex items-start space-x-6">
+                        <img src="{{ $produk->gambar ? asset($imagePath . $produk->gambar) : asset('images/placeholder.png') }}" alt="{{ $produk->nama_produk }}"
+                            class="w-36 h-36 md:w-48 md:h-48 object-cover rounded-lg flex-shrink-0">
+                        <div class="flex-1">
+                            <span class="text-xs px-2 py-1 rounded-full font-semibold {{ $produk->status ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800' }}">
+                                {{ $produk->status ? 'Aktif' : 'Non-Aktif' }}
                             </span>
-                        @endif
-                        <p class="text-gray-500 text-sm mt-1">Nama Produk:</p>
-                        <h3 class="text-xl md:text-2xl font-semibold text-gray-800 mb-1">{{ $produk->nama_produk }}</h3>
-                        <p class="text-gray-500 text-sm">Harga:</p>
-                        <p class="text-lg md:text-xl font-bold text-gray-800 mb-1">Rp{{ number_format($produk->harga, 0, ',', '.') }}</p>
-                        <p class="text-gray-500 text-sm">Stock:</p>
-                        <p class="text-lg md:text-xl font-bold text-gray-800 mb-1">{{ $produk->stok }}</p>
-                        <p class="text-gray-500 text-sm">Kategori:</p>
-                        <p class="text-lg md:text-xl font-bold text-gray-800 mb-1">{{ $produk->kategori->nama_kategori ?? 'N/A' }}</p>
-                        <p class="text-gray-500 text-sm">Deskripsi:</p>
-                        <p class="text-gray-700 text-sm md:text-base">{{ Str::limit($produk->deskripsi ?: '-', 100) }}</p>
+                            @if($produk->promo)
+                                <span class="ml-2 text-xs px-2 py-1 rounded-full font-semibold bg-yellow-200 text-yellow-800">
+                                    Promosi
+                                </span>
+                            @endif
+                            <p class="text-gray-500 text-sm mt-1">Nama Produk:</p>
+                            <h3 class="text-xl md:text-2xl font-semibold text-gray-800 mb-1">{{ $produk->nama_produk }}</h3>
+                            <p class="text-gray-500 text-sm">Harga:</p>
+                            <p class="text-lg md:text-xl font-bold text-gray-800 mb-1">Rp{{ number_format($produk->harga, 0, ',', '.') }}</p>
+                            <p class="text-gray-500 text-sm">Stock:</p>
+                            <p class="text-lg md:text-xl font-bold text-gray-800 mb-1">{{ $produk->stok }}</p>
+                            <p class="text-gray-500 text-sm">Kategori:</p>
+                            <p class="text-lg md:text-xl font-bold text-gray-800 mb-1">{{ $produk->kategori->nama_kategori ?? 'N/A' }}</p>
+                            <p class="text-gray-500 text-sm">Deskripsi:</p>
+                            <p class="text-gray-700 text-sm md:text-base">{{ Str::limit($produk->deskripsi ?: '-', 100) }}</p>
 
-                        {{-- Detail Promosi jika filter aktif --}}
-                        @if ($filterPromotion === 'true' && $produk->promo)
-                            <div class="mt-4 p-4 bg-gradient-to-br from-yellow-100 via-yellow-50 to-yellow-100 border border-yellow-300 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg">
-                                <div class="flex items-start justify-between mb-2">
-                                    <div class="flex items-center space-x-2">
-                                        <svg class="w-5 h-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.96a1 1 0 00.95.69h4.176c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.96c.3.921-.755 1.688-1.54 1.118l-3.38-2.455a1 1 0 00-1.175 0l-3.38 2.455c-.784.57-1.838-.197-1.539-1.118l1.287-3.96a1 1 0 00-.364-1.118L2.049 9.387c-.783-.57-.38-1.81.588-1.81h4.176a1 1 0 00.951-.69l1.285-3.96z"/>
-                                        </svg>
-                                        <span class="text-sm font-bold text-yellow-800">
-                                            Diskon {{ $produk->promo->diskon_persen }}%
+                            {{-- Detail Promosi jika filter aktif --}}
+                            @if ($filterPromotion === 'true' && $produk->promo)
+                                <div class="mt-4 p-4 bg-gradient-to-br from-yellow-100 via-yellow-50 to-yellow-100 border border-yellow-300 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg">
+                                    <div class="flex items-start justify-between mb-2">
+                                        <div class="flex items-center space-x-2">
+                                            <svg class="w-5 h-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.96a1 1 0 00.95.69h4.176c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.96c.3.921-.755 1.688-1.54 1.118l-3.38-2.455a1 1 0 00-1.175 0l-3.38 2.455c-.784.57-1.838-.197-1.539-1.118l1.287-3.96a1 1 0 00-.364-1.118L2.049 9.387c-.783-.57-.38-1.81.588-1.81h4.176a1 1 0 00.951-.69l1.285-3.96z"/>
+                                            </svg>
+                                            <span class="text-sm font-bold text-yellow-800">
+                                                Diskon {{ $produk->promo->diskon_persen }}%
+                                            </span>
+                                        </div>
+                                        <span class="text-xs text-gray-500">
+                                            {{ \Carbon\Carbon::parse($produk->promo->tanggal_mulai)->format('d M Y') }} -
+                                            {{ \Carbon\Carbon::parse($produk->promo->tanggal_berakhir)->format('d M Y') }}
                                         </span>
                                     </div>
-                                    <span class="text-xs text-gray-500">
-                                        {{ \Carbon\Carbon::parse($produk->promo->tanggal_mulai)->format('d M Y') }} -
-                                        {{ \Carbon\Carbon::parse($produk->promo->tanggal_berakhir)->format('d M Y') }}
-                                    </span>
+                                    <p class="text-sm text-gray-700 leading-snug italic">
+                                        {{ $produk->promo->deskripsi_promo }}
+                                    </p>
                                 </div>
-                                <p class="text-sm text-gray-700 leading-snug italic">
-                                    {{ $produk->promo->deskripsi_promo }}
-                                </p>
-                            </div>
-                        @endif
-                    </div>
-                    <div class="flex flex-col space-y-2 items-end flex-shrink-0">
-                        <form action="{{ route('admin.product.destroy', $produk->kode_produk) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus produk ini?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="bg-red-200 hover:bg-red-300 text-gray-700 font-bold py-2 px-4 rounded-lg shadow-sm w-24 text-center text-sm">
-                                Hapus
+                            @endif
+                        </div>
+                        <div class="flex flex-col space-y-2 items-end flex-shrink-0">
+                            <form action="{{ route('admin.product.destroy', $produk->kode_produk) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus produk ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="bg-red-200 hover:bg-red-300 text-gray-700 font-bold py-2 px-4 rounded-lg shadow-sm w-24 text-center text-sm">
+                                    Hapus
+                                </button>
+                            </form>
+
+                            <button data-id="{{ $produk->kode_produk }}" data-url="{{ route('admin.product.edit', $produk->kode_produk) }}"
+                                class="btn-open-edit-modal bg-[#FFFEFB] hover:bg-[#E59CAA] text-gray-800 font-bold py-2 px-4 rounded-lg shadow-sm w-24 text-center text-sm">
+                                EDIT
                             </button>
-                        </form>
-                        <button data-id="{{ $produk->kode_produk }}" data-url="{{ route('admin.product.edit', $produk->kode_produk) }}"
-                            class="btn-open-edit-modal bg-[#FFFEFB] hover:bg-[#E59CAA] text-gray-800 font-bold py-2 px-4 rounded-lg shadow-sm w-24 text-center text-sm">
-                            EDIT
-                        </button>
+
+                            @php
+                                $today = \Carbon\Carbon::today();
+                            @endphp
+
+                            @if ($produk->promo && $produk->promo->tanggal_mulai <= $today && $produk->promo->tanggal_berakhir >= $today)
+                                <button 
+                                    onclick="openModal('{{ $produk->id }}')" 
+                                    class="bg-yellow-400 hover:bg-yellow-500 text-gray-800 font-bold py-2 px-4 rounded-lg shadow-sm w-24 text-center text-sm">
+                                    Edit Promo
+                                </button>
+                            @endif
+                        </div>
                     </div>
-                </div>
                 @empty
                 <div class="col-span-full text-center py-10">
                     <p class="text-gray-500 text-xl">Belum ada produk yang sesuai dengan filter.</p>
                 </div>
                 @endforelse
             </div>
+            <!-- Modal Edit Promo -->
+            <div id="editPromoModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+                <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6 relative">
+                    <button onclick="closeModal()" class="absolute top-2 right-2 text-gray-500 hover:text-red-500">&times;</button>
+                    <h2 class="text-lg font-semibold mb-4">Edit Promosi Produk</h2>
+                    <form id="editPromoForm" method="POST">
+                        @csrf
+                        @method('PUT')
+
+                        <div class="mb-4">
+                            <label for="diskon_persen" class="block text-sm font-medium text-gray-700">Diskon (%)</label>
+                            <input type="number" name="diskon_persen" id="diskon_persen" class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="deskripsi_promo" class="block text-sm font-medium text-gray-700">Deskripsi Promosi</label>
+                            <textarea name="deskripsi_promo" id="deskripsi_promo" class="form-textarea mt-1 block w-full rounded-md border-gray-300 shadow-sm" rows="3"></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="tanggal_mulai" class="block text-sm font-medium text-gray-700">Tanggal Mulai</label>
+                            <input type="date" name="tanggal_mulai" id="tanggal_mulai" class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="tanggal_berakhir" class="block text-sm font-medium text-gray-700">Tanggal Berakhir</label>
+                            <input type="date" name="tanggal_berakhir" id="tanggal_berakhir" class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                        </div>
+
+                        <div class="flex justify-end space-x-2">
+                            <button type="button" onclick="closeModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg">Batal</button>
+                            <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
             {{-- Pagination --}}
             <div class="mt-6 flex-shrink-0">
                 {{ $produks->links() }}
             </div>
         </div>
     </div>
+
 
     {{-- Modal Tambah Produk --}}
     <div id="addModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
@@ -335,6 +386,36 @@
 @endsection
 
 @push('scripts')
+
+<script>
+    function openModal(produkId) {
+        const modal = document.getElementById('editPromoModal');
+        modal.classList.remove('hidden');
+
+        fetch(`/admin/promo/${produkId}/edit`)
+            .then(response => response.json())
+            .then(data => {
+                // Isi form dengan data dari server
+                document.getElementById('diskon_persen').value = data.diskon_persen;
+                document.getElementById('deskripsi_promo').value = data.deskripsi_promo;
+                document.getElementById('tanggal_mulai').value = data.tanggal_mulai;
+                document.getElementById('tanggal_berakhir').value = data.tanggal_berakhir;
+
+                // Ubah action form agar ke route update promo
+                document.getElementById('editPromoForm').action = `/admin/promo/${produkId}`;
+            })
+            .catch(error => {
+                alert('Gagal memuat data promo!');
+                console.error(error);
+            });
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('editPromoModal');
+        modal.classList.add('hidden');
+    }
+</script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const addModalElement = document.getElementById('addModal');

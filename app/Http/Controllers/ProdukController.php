@@ -3,44 +3,64 @@
 namespace App\Http\Controllers;
 
 use App\Models\Produk;
+use App\Models\Ulasan;
+use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProdukController extends Controller
 {
-    public function index(Request $request) {
-        $query = Produk::query();
-        if ($request->has('kategori')) {
-            $query->where('id_kategori', $request->kategori);
+    public function show(Produk $produk)
+    {
+        $produk->load('kategori');
+
+        $ratingFilter = request()->query('rating');
+
+        $ulasansQuery = $produk->ulasan()->with('pelanggan')
+            ->orderBy('tanggal', 'desc');
+
+        if ($ratingFilter && in_array($ratingFilter, [1, 2, 3, 4, 5])) {
+            $ulasansQuery->where('rating', $ratingFilter);
         }
-        return response()->json($query->get());
-    }
 
-    public function store(Request $request) {
-        $produk = Produk::create($request->all());
-        return response()->json($produk, 201);
-    }
+        $ulasans = $ulasansQuery->paginate(5)->withQueryString();
 
-    public function show($kode_produk) {
-        return response()->json(Produk::findOrFail($kode_produk));
-    }
+        $ulasanStats = Ulasan::where('kode_produk', $produk->kode_produk)
+            ->selectRaw('rating, count(*) as count')
+            ->groupBy('rating')
+            ->orderBy('rating', 'desc')
+            ->get()
+            ->keyBy('rating');
 
-    public function update(Request $request, $kode_produk) {
-        $produk = Produk::findOrFail($kode_produk);
-        $produk->update($request->all());
-        return response()->json($produk);
-    }
+        $totalUlasan = $ulasanStats->sum('count');
+        $averageRating = $totalUlasan > 0
+            ? $ulasanStats->sum(fn($stat) => $stat->rating * $stat->count) / $totalUlasan
+            : 0;
+        
+        $canReview = false;
+        if (Auth::guard('pelanggan')->check()) {
+            $pelanggan = Auth::guard('pelanggan')->user();
+            
+            $hasBought = Order::where('id_pelanggan', $pelanggan->id_pelanggan)
+                ->whereHas('historyOrder')
+                ->whereHas('detailOrder', fn($q) => $q->where('kode_produk', $produk->kode_produk))
+                ->exists();
 
-    public function destroy($kode_produk) {
-        $produk = Produk::findOrFail($kode_produk);
-        $produk->delete();
-        return response()->json(null, 204);
-    }
+            $hasReviewed = Ulasan::where('id_pelanggan', $pelanggan->id_pelanggan)
+                ->where('kode_produk', $produk->kode_produk)
+                ->exists();
 
-    public function recommended() {
-        return response()->json(Produk::inRandomOrder()->limit(5)->get());
-    }
+            $canReview = $hasBought && !$hasReviewed;
+        }
 
-    public function customCakes() {
-        return response()->json(Produk::where('id_kategori', 999)->get()); // misalnya 999 itu kategori custom
+        return view('product-detail', compact(
+            'produk',
+            'ulasans',
+            'averageRating',
+            'totalUlasan',
+            'ulasanStats',
+            'ratingFilter',
+            'canReview'
+        ));
     }
 }

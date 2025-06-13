@@ -15,9 +15,8 @@ class ProdukController extends Controller
 
     public function index(Request $request)
     {
-        $query = Produk::with('kategori');
+        $query = Produk::with(['kategori', 'promo']); // eager load relasi promo
 
-        // ... (logika filter dan sort Anda yang sudah ada) ...
         $filterStatus = $request->input('filter_status');
         $filterKategori = $request->input('filter_kategori');
         $filterPromotion = $request->input('filter_promotion');
@@ -46,7 +45,6 @@ class ProdukController extends Controller
             $query->orderBy('kode_produk', 'desc');
         }
 
-
         $produks = $query->paginate(10)->appends($request->except('page'));
         $kategoris = Kategori::orderBy('nama_kategori')->get();
 
@@ -56,11 +54,15 @@ class ProdukController extends Controller
             'promotion' => $filterPromotion
         ];
 
-        // TAMBAHKAN BARIS INI:
         $imagePath = $this->imagePath;
 
-        // KIRIMKAN $imagePath KE VIEW MELALUI COMPACT()
-        return view('admin.admin-product', compact('produks', 'kategoris', 'activeFilters', 'imagePath'));
+        return view('admin.admin-product', compact(
+            'produks',
+            'kategoris',
+            'activeFilters',
+            'imagePath',
+            'filterPromotion' // untuk digunakan di Blade
+        ));
     }
 
     public function store(Request $request)
@@ -72,7 +74,7 @@ class ProdukController extends Controller
             'stok' => 'required|integer|min:0',
             'deskripsi' => 'nullable|string',
             'gambar' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
-            'status' => 'required|boolean', // status sekarang wajib dan boolean (0 atau 1)
+            'status' => 'required|boolean',
         ]);
 
         $filename = null;
@@ -119,6 +121,7 @@ class ProdukController extends Controller
             if ($produk->gambar && File::exists(public_path($this->imagePath . $produk->gambar))) {
                 File::delete(public_path($this->imagePath . $produk->gambar));
             }
+
             $file = $request->file('gambar');
             $filename = time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
             $file->move(public_path($this->imagePath), $filename);
@@ -134,6 +137,7 @@ class ProdukController extends Controller
         if ($produk->gambar && File::exists(public_path($this->imagePath . $produk->gambar))) {
             File::delete(public_path($this->imagePath . $produk->gambar));
         }
+
         $produk->delete();
         return redirect()->route('admin.product')->with('success', 'Produk berhasil dihapus!');
     }

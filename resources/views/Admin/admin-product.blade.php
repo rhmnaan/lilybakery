@@ -67,7 +67,7 @@
                 <h1 class="text-3xl font-bold text-gray-800">PRODUK TERSEDIA</h1>
                 <button id="btnOpenAddModal" class="bg-[#FFF1EA] hover:bg-[#E59CAA] font-semibold py-2 px-5 rounded-lg flex items-center shadow-md">
                     <i class="fas fa-plus mr-2"></i> Tambah Produk
-                </button>
+                </button> 
             </div>
 
             {{-- Flash Messages --}}
@@ -175,6 +175,29 @@
                         <p class="text-lg md:text-xl font-bold text-gray-800 mb-1">{{ $produk->kategori->nama_kategori ?? 'N/A' }}</p>
                         <p class="text-gray-500 text-sm">Deskripsi:</p>
                         <p class="text-gray-700 text-sm md:text-base">{{ Str::limit($produk->deskripsi ?: '-', 100) }}</p>
+
+                        {{-- Detail Promosi jika filter aktif --}}
+                        @if ($filterPromotion === 'true' && $produk->promo)
+                            <div class="mt-4 p-4 bg-gradient-to-br from-yellow-100 via-yellow-50 to-yellow-100 border border-yellow-300 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div class="flex items-center space-x-2">
+                                        <svg class="w-5 h-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.96a1 1 0 00.95.69h4.176c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.96c.3.921-.755 1.688-1.54 1.118l-3.38-2.455a1 1 0 00-1.175 0l-3.38 2.455c-.784.57-1.838-.197-1.539-1.118l1.287-3.96a1 1 0 00-.364-1.118L2.049 9.387c-.783-.57-.38-1.81.588-1.81h4.176a1 1 0 00.951-.69l1.285-3.96z"/>
+                                        </svg>
+                                        <span class="text-sm font-bold text-yellow-800">
+                                            Diskon {{ $produk->promo->diskon_persen }}%
+                                        </span>
+                                    </div>
+                                    <span class="text-xs text-gray-500">
+                                        {{ \Carbon\Carbon::parse($produk->promo->tanggal_mulai)->format('d M Y') }} -
+                                        {{ \Carbon\Carbon::parse($produk->promo->tanggal_berakhir)->format('d M Y') }}
+                                    </span>
+                                </div>
+                                <p class="text-sm text-gray-700 leading-snug italic">
+                                    {{ $produk->promo->deskripsi_promo }}
+                                </p>
+                            </div>
+                        @endif
                     </div>
                     <div class="flex flex-col space-y-2 items-end flex-shrink-0">
                         <form action="{{ route('admin.product.destroy', $produk->kode_produk) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus produk ini?')">
@@ -211,7 +234,7 @@
                 @csrf
                 <input type="hidden" name="form_type" value="add_product"> {{-- Untuk re-open modal jika ada error --}}
                 <div class="mb-3">
-                    <label class="block text-sm font-semibold mb-1 text-gray-700">Nama Produk</label>
+                    <label class="block text-sm font-semibold mb-1 text-gray-700">Nama Produk</label><div class="table-responsive"></div>
                     <input type="text" name="nama_produk" value="{{ old('nama_produk') }}" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]" placeholder="Nama Produk" required>
                 </div>
                 <div class="grid grid-cols-2 gap-4 mb-3">

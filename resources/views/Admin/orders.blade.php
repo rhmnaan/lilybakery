@@ -3,67 +3,8 @@
 @section('content')
     <div class="bg-[#FFF1EA] min-h-screen font-sans p-8">
         <div class="flex bg-[#FFFEFB] rounded-lg shadow-[0_35px_35px_rgba(0,0,0,0.25)] overflow-hidden">
-            {{-- Sidebar --}}
-            <div class="w-64 bg-[#FFF7F3] pt-4">
-                <div class="p-4">
-                    <div class="flex flex-col items-center justify-center bg-[#E59CAA] rounded-lg py-4 px-2 mb-6 shadow-sm">
-                        <img src="{{ asset('images/logo.png') }}" alt="Lily Bakery">
-                    </div>
-                </div>
-                <nav class="mt-2 space-y-1">
-                    {{-- Dashboard Link (Active State) --}}
-                    <a href="{{ route('admin.dashboard') }}" class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]
-                                @if(Request::routeIs('admin.dashboard')) bg-[#F9D8D9] text-gray-900 font-semibold @endif">
-                        {{-- ICON DIKEMBALIKAN SESUAI GAMBAR: Dashboard = Check Circle --}}
-                        <i class="far fa-check-circle mr-3 text-xl"></i>
-                        <span>Dashboard</span>
-                    </a>
-
-                    {{-- Product Link --}}
-                    <a href="{{ route('admin.product') }}"
-                        class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]">
-                        {{-- ICON DIKEMBALIKAN SESUAI GAMBAR: Product = Edit (Pensil) --}}
-                        <i class="far fa-edit mr-3 text-xl"></i>
-                        <span>Product</span>
-                    </a>
-
-                    {{-- Orders --}}
-                    <a href="{{ route('admin.orders') }}"
-                        class="flex items-center px-6 py-3 rounded-md text-gray-900 font-semibold bg-[#F9D8D9]">
-                        {{-- ICON DIKEMBALIKAN SESUAI GAMBAR: Orders = User (Profil) --}}
-                        <i class="fas fa-shopping-bag mr-3 text-xl"></i> {{-- Changed icon to shopping-bag as it fits orders
-                        better --}}
-                        <span>Orders</span>
-                    </a>
-
-                    {{-- Customers --}}
-                    <a href="{{ route('admin.customers') }}"
-                        class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]">
-                        {{-- ICON DIKEMBALIKAN SESUAI GAMBAR: Customers = User (Profil) --}}
-                        <i class="far fa-user mr-3 text-xl"></i>
-                        <span>Customers</span>
-                    </a>
-
-                    {{-- Setting --}}
-                    <a href="{{ route('admin.settings') }}"
-                        class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]">
-                        {{-- ICON TETAP SESUAI GAMBAR: Setting = Cog --}}
-                        <i class="fas fa-cog mr-3 text-xl"></i>
-                        <span>Setting</span>
-                    </a>
-
-                    {{-- Logout Button with Confirmation --}}
-                    {{-- Logout Button with SweetAlert Confirmation --}}
-                    <form id="logout-form" method="POST" action="{{ route('admin.logout') }}" class="block w-full">
-                        @csrf
-                        <button type="submit"
-                            class="flex items-center w-full px-6 py-3 rounded-md text-gray-700 hover:bg-red-100 hover:text-red-700">
-                            <i class="fas fa-sign-out-alt mr-3 text-xl"></i>
-                            <span>Logout</span>
-                        </button>
-                    </form>
-                </nav>
-            </div>
+            {{-- Left Sidebar --}}
+            @include('Admin.layouts.sidebar')
 
             <!-- Main Content -->
             <section class="flex-1 p-8 overflow-y-auto">
@@ -139,58 +80,61 @@
 
                     <!-- Table Section -->
                     <section class="bg-white rounded-xl shadow p-4">
-                        <table class="w-full table-auto text-left border-2 border-gray-400 ">
-                            <thead class="border-2 border-gray-400 h-12">
-                                <tr class="text-black text-left">
-                                    <th class="px-2">Nama Pelanggan</th>
-                                    <th class="px-2">Produk</th>
-                                    <th class="px-2">Total</th>
-                                    <th class="px-2">Status</th>
-                                    <th class="px-2">Tanggal</th>
-                                    <th class="px-2">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-black text-left">
-                                @forelse($orders as $order)
-                                    <tr class="border-b border-gray-400 hover:bg-gray-50">
-                                        <td class="py-3 px-2">{{ $order->pelanggan->nama_pelanggan ?? 'N/A' }}</td>
-                                        <td class="py-3 px-2">
-                                            @foreach($order->detailOrder as $detail)
-                                                {{ $detail->jumlah }}x {{ $detail->produk->nama_produk ?? 'Produk Dihapus' }}<br>
-                                            @endforeach
-                                        </td>
-                                        <td class="py-3 px-2">Rp {{ number_format($order->total_harga, 0, ',', '.') }}</td>
-                                        <td>
-                                            @php
-                                                $color = match ($order->status) {
-                                                    'Diproses' => 'bg-yellow-100 text-yellow-600',
-                                                    'Dikirim' => 'bg-blue-100 text-blue-600',
-                                                    'Selesai' => 'bg-green-100 text-green-600',
-                                                    'Dibatalkan' => 'bg-red-100 text-red-600',
-                                                    default => 'bg-gray-100 text-gray-600',
-                                                };
-                                            @endphp
-                                            <span class="{{ $color }} px-2 py-1 rounded">{{ $order->status }}</span>
-                                        </td>
-                                        <td class="py-3 px-2">
-                                            {{ \Carbon\Carbon::parse($order->tanggal_order)->format('d M Y') }}
-                                        </td>
-                                        <td class="flex space-x-2 py-3">
-                                            <button onclick="openEditModal({{ $order->id_order }})" title="Edit"><i
-                                                    class="fas fa-edit text-lily-pink"></i></button>
-                                            <button onclick="openDeleteModal({{ $order->id_order }})" title="Delete"><i
-                                                    class="fas fa-trash text-lily-pink-dark"></i></button>
-                                        </td>
+                        <div class="overflow-y-auto max-h-[500px]"> <!-- 👈 Tambahkan ini -->
+                            <table class="w-full table-auto text-left border-2 border-gray-400">
+                                <thead class="border-2 border-gray-400 h-12">
+                                    <tr class="text-black text-left">
+                                        <th class="px-2">Nama Pelanggan</th>
+                                        <th class="px-2">Produk</th>
+                                        <th class="px-2">Total</th>
+                                        <th class="px-2">Status</th>
+                                        <th class="px-2">Tanggal</th>
+                                        <th class="px-2">Aksi</th>
                                     </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="6" class="text-center py-6 text-gray-500">
-                                            Tidak ada pesanan dengan status ini.
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody class="text-black text-left">
+                                    @forelse($orders as $order)
+                                        <tr class="border-b border-gray-400 hover:bg-gray-50">
+                                            <td class="py-3 px-2">{{ $order->pelanggan->nama_pelanggan ?? 'N/A' }}</td>
+                                            <td class="py-3 px-2">
+                                                @foreach($order->detailOrder as $detail)
+                                                    {{ $detail->jumlah }}x {{ $detail->produk->nama_produk ?? 'Produk Dihapus' }}<br>
+                                                @endforeach
+                                            </td>
+                                            <td class="py-3 px-2">Rp {{ number_format($order->total_harga, 0, ',', '.') }}</td>
+                                            <td>
+                                                @php
+                                                    $color = match ($order->status) {
+                                                        'Diproses' => 'bg-yellow-100 text-yellow-600',
+                                                        'Dikirim' => 'bg-blue-100 text-blue-600',
+                                                        'Selesai' => 'bg-green-100 text-green-600',
+                                                        'Dibatalkan' => 'bg-red-100 text-red-600',
+                                                        default => 'bg-gray-100 text-gray-600',
+                                                    };
+                                                @endphp
+                                                <span class="{{ $color }} px-2 py-1 rounded">{{ $order->status }}</span>
+                                            </td>
+                                            <td class="py-3 px-2">
+                                                {{ \Carbon\Carbon::parse($order->tanggal_order)->format('d M Y') }}
+                                            </td>
+                                            <td class="flex space-x-2 py-3">
+                                                <button onclick="openEditModal({{ $order->id_order }})" title="Edit"><i
+                                                        class="fas fa-edit text-lily-pink"></i></button>
+                                                <button onclick="openDeleteModal({{ $order->id_order }})" title="Delete"><i
+                                                        class="fas fa-trash text-lily-pink-dark"></i></button>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="6" class="text-center py-6 text-gray-500">
+                                                Tidak ada pesanan dengan status ini.
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div> <!-- 👈 Tutup scroll container -->
+
                         <div class="flex justify-between mt-6 px-4 text-sm text-gray-700 font-medium">
                             <div>
                                 Total Pesanan :

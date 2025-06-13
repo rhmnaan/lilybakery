@@ -3,72 +3,32 @@
 @section('content')
 <div class="bg-[#FFF1EA] min-h-screen font-sans p-8">
     <div class="flex bg-[#FFFEFB] rounded-lg shadow-[0_35px_35px_rgba(0,0,0,0.25)] overflow-hidden" style="max-height: calc(100vh - 4rem);">
+        
         {{-- Left Sidebar --}}
-            <div class="w-64 bg-[#FFF7F3] pt-4">
-                <div class="p-4">
-                    {{-- Logo Section --}}
-                    <div class="flex flex-col items-center justify-center bg-[#E59CAA] rounded-lg py-4 px-2 mb-6 shadow-sm">
-                        <img src="{{ asset('images/logo.png') }}" alt="Lily Bakery" class="max-w-full h-auto">
-                    </div>
-                </div>
-                <nav class="mt-2 space-y-1">
-                    {{-- Dashboard Link (Active State) --}}
-                    <a href="{{ route('admin.dashboard') }}" class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]
-                    @if(Request::routeIs('admin.dashboard')) bg-[#F9D8D9] text-gray-900 font-semibold @endif">
-                        {{-- ICON DIKEMBALIKAN SESUAI GAMBAR: Dashboard = Check Circle --}}
-                        <i class="far fa-check-circle mr-3 text-xl"></i>
-                        <span>Dashboard</span>
-                    </a>
-
-                    {{-- Product Link --}}
-                    <a href="{{ route('admin.product') }}"
-                        class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]">
-                        {{-- ICON DIKEMBALIKAN SESUAI GAMBAR: Product = Edit (Pensil) --}}
-                        <i class="far fa-edit mr-3 text-xl"></i>
-                        <span>Product</span>
-                    </a>
-
-                    {{-- Orders --}}
-                    <a href="{{ route('admin.orders') }}" class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]">
-                        {{-- ICON DIKEMBALIKAN SESUAI GAMBAR: Orders = User (Profil) --}}
-                        <i class="fas fa-shopping-bag mr-3 text-xl"></i> {{-- Changed icon to shopping-bag as it fits orders better --}}
-                        <span>Orders</span>
-                    </a>
-
-                    {{-- Customers --}}
-                    <a href="{{ route('admin.customers') }}" class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]">
-                        {{-- ICON DIKEMBALIKAN SESUAI GAMBAR: Customers = User (Profil) --}}
-                        <i class="far fa-user mr-3 text-xl"></i>
-                        <span>Customers</span>
-                    </a>
-
-                    {{-- Setting --}}
-                    <a href="{{ route('admin.settings') }}" class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]">
-                        {{-- ICON TETAP SESUAI GAMBAR: Setting = Cog --}}
-                        <i class="fas fa-cog mr-3 text-xl"></i>
-                        <span>Setting</span>
-                    </a>
-
-                    {{-- Logout Button with Confirmation --}}
-                    {{-- Logout Button with SweetAlert Confirmation --}}
-                    <form id="logout-form" method="POST" action="{{ route('admin.logout') }}" class="block w-full">
-                        @csrf
-                        <button type="submit" class="flex items-center w-full px-6 py-3 rounded-md text-gray-700 hover:bg-red-100 hover:text-red-700">
-                            <i class="fas fa-sign-out-alt mr-3 text-xl"></i>
-                            <span>Logout</span>
-                        </button>
-                    </form>
-                </nav>
-            </div>
+        @include('Admin.layouts.sidebar')
 
         {{-- Main Content --}}
         <div class="flex-1 p-8 flex flex-col overflow-hidden">
             <div class="flex justify-between items-center mb-8 flex-shrink-0">
                 <h1 class="text-3xl font-bold text-gray-800">PRODUK TERSEDIA</h1>
-                <button id="btnOpenAddModal" class="bg-[#FFF1EA] hover:bg-[#E59CAA] font-semibold py-2 px-5 rounded-lg flex items-center shadow-md">
-                    <i class="fas fa-plus mr-2"></i> Tambah Produk
-                </button> 
+                
+                <div class="flex items-center space-x-4">
+                    @if (request('filter_promotion') === 'true')
+                        <!-- Tombol Tambah Promosi -->
+                        <button onclick="openAddPromoModal()" class="bg-pink-100 hover:bg-pink-200 text-pink-700 font-semibold py-2 px-5 rounded-lg flex items-center shadow-md">
+                            <i class="fas fa-tags mr-2 text-pink-600"></i> Tambah Promosi
+                        </button>
+                    @endif
+
+
+                    <!-- Tombol Tambah Produk -->
+                    <button id="btnOpenAddModal" class="bg-[#FFF1EA] hover:bg-[#E59CAA] font-semibold py-2 px-5 rounded-lg flex items-center shadow-md text-gray-800">
+                        <i class="fas fa-plus mr-2 text-[#D6929F]"></i> Tambah Produk
+                    </button>
+                </div>
             </div>
+
+
 
             {{-- Flash Messages --}}
             @if (session('success'))
@@ -268,7 +228,6 @@
                     </form>
                 </div>
             </div>
-
             {{-- Pagination --}}
             <div class="mt-6 flex-shrink-0">
                 {{ $produks->links() }}
@@ -382,6 +341,59 @@
             </form>
         </div>
     </div>
+
+    <!-- Modal Tambah Promosi -->
+    <div id="addPromoModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-xl p-6 relative">
+            <button onclick="closeAddPromoModal()" class="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-xl">&times;</button>
+            <h2 class="text-lg font-semibold mb-4">Tambah Promosi Baru</h2>
+            
+            <form action="{{ route('admin.promo.store') }}" method="POST">
+                @csrf
+
+                <div class="mb-4">
+                    <label for="search_produk" class="block text-sm font-medium text-gray-700">Cari Produk</label>
+                    <input type="text" id="search_produk" onkeyup="filterProduk()" placeholder="Ketik nama produk..." class="form-input mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                </div>
+
+                <div class="mb-4">
+                    <label for="id_produk" class="block text-sm font-medium text-gray-700">Pilih Produk</label>
+                    <select name="id_produk" id="produk_select" class="form-select mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                        @foreach ($produks as $produk)
+                            <option value="{{ $produk->id }}">{{ $produk->nama_produk }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="diskon_persen" class="block text-sm font-medium text-gray-700">Diskon (%)</label>
+                    <input type="number" name="diskon_persen" class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="deskripsi_promo" class="block text-sm font-medium text-gray-700">Deskripsi Promosi</label>
+                    <textarea name="deskripsi_promo" class="form-textarea mt-1 block w-full rounded-md border-gray-300 shadow-sm" rows="3"></textarea>
+                </div>
+
+                <div class="mb-4 grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Tanggal Mulai</label>
+                        <input type="date" name="tanggal_mulai" class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Tanggal Berakhir</label>
+                        <input type="date" name="tanggal_berakhir" class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-2">
+                    <button type="button" onclick="closeAddPromoModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg">Batal</button>
+                    <button type="submit" class="bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2 px-4 rounded-lg">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </div>
 @endsection
 
@@ -389,32 +401,52 @@
 
 <script>
     function openModal(produkId) {
-        const modal = document.getElementById('editPromoModal');
-        modal.classList.remove('hidden');
+    const modal = document.getElementById('editPromoModal');
+    modal.classList.remove('hidden');
 
-        fetch(`/admin/promo/${produkId}/edit`)
-            .then(response => response.json())
-            .then(data => {
-                // Isi form dengan data dari server
-                document.getElementById('diskon_persen').value = data.diskon_persen;
-                document.getElementById('deskripsi_promo').value = data.deskripsi_promo;
-                document.getElementById('tanggal_mulai').value = data.tanggal_mulai;
-                document.getElementById('tanggal_berakhir').value = data.tanggal_berakhir;
+    fetch(`/admin/product/promo/${produkId}/edit`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('diskon_persen').value = data.diskon_persen || '';
+            document.getElementById('deskripsi_promo').value = data.deskripsi_promo || '';
+            document.getElementById('tanggal_mulai').value = data.tanggal_mulai || '';
+            document.getElementById('tanggal_berakhir').value = data.tanggal_berakhir || '';
+            document.getElementById('editPromoForm').action = `/admin/product/promo/${produkId}/update`;
+        })
+        .catch(error => {
+            alert('Gagal memuat data promo!');
+            console.error(error);
+        });
+}
 
-                // Ubah action form agar ke route update promo
-                document.getElementById('editPromoForm').action = `/admin/promo/${produkId}`;
-            })
-            .catch(error => {
-                alert('Gagal memuat data promo!');
-                console.error(error);
-            });
-    }
 
     function closeModal() {
         const modal = document.getElementById('editPromoModal');
         modal.classList.add('hidden');
     }
 </script>
+
+<script>
+    function openAddPromoModal() {
+        document.getElementById('addPromoModal').classList.remove('hidden');
+    }
+
+    function closeAddPromoModal() {
+        document.getElementById('addPromoModal').classList.add('hidden');
+    }
+
+    function filterProduk() {
+        const input = document.getElementById('search_produk').value.toLowerCase();
+        const select = document.getElementById('produk_select');
+        const options = select.options;
+
+        for (let i = 0; i < options.length; i++) {
+            const optionText = options[i].text.toLowerCase();
+            options[i].style.display = optionText.includes(input) ? '' : 'none';
+        }
+    }
+</script>
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {

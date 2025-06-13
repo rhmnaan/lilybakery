@@ -17,6 +17,9 @@ class StoreLocation extends Model
         'nama_toko',
         'alamat',
         'telp',
-        'link_location'
+        'img',
+        'link_location',
+        'latitude',
+        'longitude'
     ];
 }

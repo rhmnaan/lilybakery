@@ -8,6 +8,9 @@ use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use App\Models\Promo;
+use Carbon\Carbon;
+
 
 class ProdukController extends Controller
 {
@@ -141,4 +144,55 @@ class ProdukController extends Controller
         $produk->delete();
         return redirect()->route('admin.product')->with('success', 'Produk berhasil dihapus!');
     }
+
+    public function tambahPromo()
+    {
+        $produks = Produk::whereDoesntHave('promo')->get(); // hanya produk tanpa promo
+        return view('admin.promosi.create', compact('produks'));
+    }
+
+
+
+    public function editPromo($id)
+    {
+        $produk = Produk::with('promo')->findOrFail($id);
+        if (!$produk->promo) {
+            return response()->json([
+                'diskon_persen' => '',
+                'deskripsi_promo' => '',
+                'tanggal_mulai' => '',
+                'tanggal_berakhir' => '',
+            ]);
+        }
+
+        return response()->json($produk->promo);
+    }
+
+
+    public function updatePromo(Request $request, $id)
+    {
+        $request->validate([
+            'diskon_persen' => 'required|numeric|min:1|max:100',
+            'deskripsi_promo' => 'nullable|string',
+            'tanggal_mulai' => 'required|date',
+            'tanggal_berakhir' => 'required|date|after_or_equal:tanggal_mulai',
+        ]);
+
+        $promo = Promo::where('produk_id', $id)->first();
+
+        if (!$promo) {
+            return response()->json(['error' => 'Promosi tidak ditemukan'], 404);
+        }
+
+        $promo->update([
+            'diskon_persen' => $request->diskon_persen,
+            'deskripsi_promo' => $request->deskripsi_promo,
+            'tanggal_mulai' => Carbon::parse($request->tanggal_mulai),
+            'tanggal_berakhir' => Carbon::parse($request->tanggal_berakhir),
+        ]);
+
+        return response()->json(['success' => 'Promosi berhasil diperbarui']);
+    }
+
+
 }

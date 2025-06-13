@@ -47,4 +47,11 @@ class Produk extends Model
     {
         return $this->hasMany(Ulasan::class, 'kode_produk', 'kode_produk');
     }
+
+    // Scope untuk mengambil produk yang belum memiliki promo
+    public function scopeTanpaPromo($query)
+    {
+        return $query->whereDoesntHave('promo');
+    }
+
 }

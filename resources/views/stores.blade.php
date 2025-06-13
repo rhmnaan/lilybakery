@@ -26,7 +26,7 @@
                 <button data-city="JAKARTA" class="w-full py-2 px-4 text-left hover:bg-gray-50 border-b city-btn">Jakarta</button>
                 <button data-city="SURABAYA" class="w-full py-2 px-4 text-left hover:bg-gray-50 city-btn">Surabaya</button>
                 </div>
-        </div>
+        </div>  
 
         <div class="w-full lg:w-4/5 grid grid-cols-1 md:grid-cols-2 gap-6" id="storeContainer">
             <?php if(isset($stores) && $stores->count() > 0): ?>
@@ -35,7 +35,7 @@
                     
                     <div class="px-3 pt-3">
                         
-                        <img src="<?php echo e(asset('images/store.png')); ?>" alt="Lily Bakery <?php echo e($store->nama_toko); ?>" class="w-full h-64 object-cover rounded-md">
+                        <img src="<?php echo e(asset('images/store/store.png')); ?>" alt="Lily Bakery <?php echo e($store->nama_toko); ?>" class="w-full h-64 object-cover rounded-md">
                     </div>
                     <div class="p-4 space-y-2">
                         <h2 class="text-lg font-semibold">LILY BAKERY <?php echo e(strtoupper($store->nama_toko)); ?></h2>

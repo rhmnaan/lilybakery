@@ -22,7 +22,7 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CustomCakeController;
 use App\Http\Controllers\Admin\PromoController as AdminPromoController;
 use App\Http\Controllers\MidtransWebhookController;
-
+use App\Http\Controllers\Admin\AdminStoreController;
 
 use App\Http\Controllers\ProdukController as PublicProdukController;
 
@@ -168,6 +168,11 @@ Route::middleware(['auth:admin'])->group(function () {
         Route::put('product/{produk}', [ProdukController::class, 'update'])->name('product.update');
         Route::delete('product/{produk}', [ProdukController::class, 'destroy'])->name('product.destroy');
 
+        // admin product promo
+        Route::get('product/promo/{id}/edit', [ProdukController::class, 'editPromo'])->name('product.promo.edit');
+        Route::post('product/promo/{id}/update', [ProdukController::class, 'updatePromo'])->name('product.promo.update');
+
+
         // admin promosi
         Route::post('/promotions', [AdminPromoController::class, 'store'])->name('promo.store');
         Route::resource('promotions', AdminPromoController::class)->only([
@@ -198,6 +203,13 @@ Route::middleware(['auth:admin'])->group(function () {
         Route::get('/settings/admins/{id}/edit', [SettingController::class, 'edit'])->name('settings.editAdmin'); // <-- ROUTE BARU
         Route::put('/settings/admins/{id}', [SettingController::class, 'updateAdmin'])->name('settings.updateAdmin');
         Route::delete('/settings/admins/{id}', [SettingController::class, 'destroyAdmin'])->name('settings.destroyAdmin');
+
+        // Rute untuk halaman Store Admin
+        Route::get('/store', [AdminStoreController::class, 'index'])->name('store');
+        Route::get('/store/search', [AdminStoreController::class, 'search'])->name('store.search');
+        Route::post('/store', [AdminStoreController::class, 'store'])->name('store.store');
+        Route::put('/admin/store/{id}', [AdminStoreController::class, 'update'])->name('admin.store.update');
+
     });
 });
 

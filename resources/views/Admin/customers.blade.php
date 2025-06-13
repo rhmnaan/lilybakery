@@ -4,24 +4,7 @@
 <div class="bg-[#FFF1EA] min-h-screen font-sans p-8">
     <div class="flex bg-[#FFFEFB] rounded-lg shadow-[0_35px_35px_rgba(0,0,0,0.25)] overflow-hidden" style="max-height: calc(100vh - 4rem);">
         {{-- Sidebar --}}
-        <div class="w-64 bg-[#FFF7F3] pt-4">
-            <div class="p-4">
-                <div class="flex flex-col items-center justify-center bg-[#E59CAA] rounded-lg py-4 px-2 mb-6 shadow-sm">
-                    <img src="{{ asset('images/logo.png') }}" alt="Lily Bakery" class="max-w-full h-auto">
-                </div>
-            </div>
-            <nav class="mt-2 space-y-1">
-                <a href="{{ route('admin.dashboard') }}" class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]"><i class="far fa-check-circle mr-3 text-xl"></i><span>Dashboard</span></a>
-                <a href="{{ route('admin.product') }}" class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]"><i class="far fa-edit mr-3 text-xl"></i><span>Product</span></a>
-                <a href="{{ route('admin.orders') }}" class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]"><i class="fas fa-shopping-bag mr-3 text-xl"></i><span>Orders</span></a>
-                <a href="{{ route('admin.customers') }}" class="flex items-center px-6 py-3 rounded-md font-semibold text-gray-900 bg-[#F9D8D9]"><i class="far fa-user mr-3 text-xl"></i><span>Customers</span></a>
-                <a href="{{ route('admin.settings') }}" class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]"><i class="fas fa-cog mr-3 text-xl"></i><span>Setting</span></a>
-                <form id="logout-form" method="POST" action="{{ route('admin.logout') }}" class="block w-full">
-                    @csrf
-                    <button type="submit" class="flex items-center w-full px-6 py-3 rounded-md text-gray-700 hover:bg-red-100 hover:text-red-700"><i class="fas fa-sign-out-alt mr-3 text-xl"></i><span>Logout</span></button>
-                </form>
-            </nav>
-        </div>
+        @include('Admin.layouts.sidebar')
 
         {{-- Main Content --}}
         <div class="flex-1 p-8 flex flex-col overflow-hidden">

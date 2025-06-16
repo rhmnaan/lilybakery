@@ -67,13 +67,17 @@
 
       <div class="w-full lg:w-2/3 border border-gray-300 rounded-lg p-6 space-y-6">
         <h2 class="font-semibold text-sm uppercase">Set Delivery Location</h2>
-        <div>
-          <h3 class="font-semibold mb-2">1. Set Location</h3>
-          <input type="text" id="alamat-dipilih" class="mb-4 w-full border border-gray-300 rounded-md px-4 py-2"
+        <!-- Tambahkan di dalam <body>, bagian lokasi -->
+        <div class="relative">
+          <input type="text" id="alamat-dipilih" class="mb-1 w-full border border-gray-300 rounded-md px-4 py-2"
             placeholder="Ketik atau klik peta untuk memilih lokasi..."
             value="{{ old('alamat', $pelanggan->alamat) }}" />
-          <div id="peta"></div>
+          <!-- Dropdown hasil pencarian -->
+          <div id="autocomplete-results"
+            class="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow mt-1 max-h-60 overflow-y-auto hidden">
+          </div>
         </div>
+        <div id="peta"></div>
         <div>
           <h3 class="font-semibold mb-2 mt-4">2. Complete Address</h3>
           <textarea placeholder="Ketik Alamat Lengkap.." rows="3"
@@ -104,100 +108,152 @@
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    // [LOGIKA BARU]
-    // 1. Ambil data SEMUA lokasi toko dari controller
-    const allStores = @json($stores);
+  const allStores = @json($stores);
+  const TARIF_DASAR = 5000;
+  const TARIF_PER_KM = 2000;
 
-    const TARIF_DASAR = 5000;
-    const TARIF_PER_KM = 2000;
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 0.5 - Math.cos(dLat) / 2 +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      (1 - Math.cos(dLon)) / 2;
+    return R * 2 * Math.asin(Math.sqrt(a));
+  }
 
-    // 2. Fungsi untuk menghitung jarak
-    function calculateDistance(lat1, lon1, lat2, lon2) {
-      const R = 6371; // Radius bumi dalam km
-      const dLat = (lat2 - lat1) * Math.PI / 180;
-      const dLon = (lon2 - lon1) * Math.PI / 180;
-      const a = 0.5 - Math.cos(dLat) / 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * (1 - Math.cos(dLon)) / 2;
-      return R * 2 * Math.asin(Math.sqrt(a));
-    }
+  function findNearestStoreAndUpdateUI(customerLat, customerLng) {
+    let nearestStore = null;
+    let minDistance = Infinity;
 
-    // 3. Fungsi untuk mencari toko terdekat dan mengupdate UI
-    function findNearestStoreAndUpdateUI(customerLat, customerLng) {
-      let nearestStore = null;
-      let minDistance = Infinity;
-
-      // Loop melalui semua toko untuk menemukan yang terdekat
-      allStores.forEach(store => {
-        if (store.latitude && store.longitude) {
-          const distance = calculateDistance(customerLat, customerLng, store.latitude, store.longitude);
-          if (distance < minDistance) {
-            minDistance = distance;
-            nearestStore = store;
-          }
-        }
-      });
-
-      if (nearestStore) {
-        // Hitung ongkir berdasarkan toko terdekat
-        let ongkir = TARIF_DASAR + (Math.round(minDistance) * TARIF_PER_KM);
-        document.getElementById('input_ongkir').value = ongkir;
-        document.getElementById('input_toko_asal').value = `Lily Bakery ${nearestStore.nama_toko}`;
-
-        // Update tampilan UI
-        document.getElementById('store-origin-display').innerText = `Lily Bakery ${nearestStore.nama_toko}`;
-        document.getElementById('ongkir-display').innerText = `Rp ${ongkir.toLocaleString('id-ID')}`;
-        document.getElementById('total-display').innerText = `Rp ${ongkir.toLocaleString('id-ID')}`;
-      } else {
-        document.getElementById('store-origin-display').innerText = `-`;
-        document.getElementById('ongkir-display').innerText = `Rp 0`;
-        document.getElementById('total-display').innerText = `Rp 0`;
-      }
-    }
-
-    // [MODIFIKASI] Tambahkan event listener untuk form submit
-    document.getElementById('order-info-form').addEventListener('submit', function () {
-      // Ambil nilai dari input yang terlihat
-      document.getElementById('input_nama_penerima').value = document.querySelector('input[placeholder="Nama Penerima"]').value;
-      document.getElementById('input_telp_penerima').value = document.querySelector('input[placeholder="Nomor Telepon"]').value;
-      document.getElementById('input_alamat_pengiriman').value = document.getElementById('alamat-dipilih').value;
-    });
-
-    // --- Inisialisasi Peta Leaflet ---
-    // Peta akan berpusat pada toko pertama dalam daftar
-    const initialLocation = [allStores[0].latitude || -7.0736, allStores[0].longitude || 112.5700];
-    const peta = L.map('peta').setView(initialLocation, 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(peta);
-    let marker;
-
-    // Tambahkan marker untuk semua lokasi toko
     allStores.forEach(store => {
       if (store.latitude && store.longitude) {
-        L.marker([store.latitude, store.longitude]).addTo(peta)
-          .bindPopup(`<b>Lily Bakery ${store.nama_toko}</b>`);
+        const distance = calculateDistance(customerLat, customerLng, store.latitude, store.longitude);
+        if (distance < minDistance) {
+          minDistance = distance;
+          nearestStore = store;
+        }
       }
     });
 
-    peta.on('click', async function (e) {
-      const lat = e.latlng.lat;
-      const lng = e.latlng.lng;
-      if (marker) {
-        marker.setLatLng(e.latlng);
-      } else {
-        marker = L.marker(e.latlng).addTo(peta);
-      }
+    if (nearestStore) {
+      const ongkir = TARIF_DASAR + (Math.round(minDistance) * TARIF_PER_KM);
+      document.getElementById('input_ongkir').value = ongkir;
+      document.getElementById('input_toko_asal').value = `Lily Bakery ${nearestStore.nama_toko}`;
+      document.getElementById('store-origin-display').innerText = `Lily Bakery ${nearestStore.nama_toko}`;
+      document.getElementById('ongkir-display').innerText = `Rp ${ongkir.toLocaleString('id-ID')}`;
+      document.getElementById('total-display').innerText = `Rp ${ongkir.toLocaleString('id-ID')}`;
+    } else {
+      document.getElementById('store-origin-display').innerText = `-`;
+      document.getElementById('ongkir-display').innerText = `Rp 0`;
+      document.getElementById('total-display').innerText = `Rp 0`;
+    }
+  }
 
-      // [MODIFIKASI] Panggil fungsi kalkulasi setelah klik peta
-      findNearestStoreAndUpdateUI(lat, lng);
+  document.getElementById('order-info-form').addEventListener('submit', function () {
+    document.getElementById('input_nama_penerima').value = document.querySelector('input[placeholder="Nama Penerima"]').value;
+    document.getElementById('input_telp_penerima').value = document.querySelector('input[placeholder="Nomor Telepon"]').value;
+    document.getElementById('input_alamat_pengiriman').value = document.getElementById('alamat-dipilih').value;
+  });
 
-      const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`;
+  const initialLocation = [allStores[0].latitude || -7.0736, allStores[0].longitude || 112.5700];
+  const peta = L.map('peta').setView(initialLocation, 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(peta);
+  let marker;
+
+  allStores.forEach(store => {
+    if (store.latitude && store.longitude) {
+      L.marker([store.latitude, store.longitude]).addTo(peta)
+        .bindPopup(`<b>Lily Bakery ${store.nama_toko}</b>`);
+    }
+  });
+
+  peta.on('click', async function (e) {
+    const lat = e.latlng.lat;
+    const lng = e.latlng.lng;
+    if (marker) {
+      marker.setLatLng(e.latlng);
+    } else {
+      marker = L.marker(e.latlng).addTo(peta);
+    }
+
+    findNearestStoreAndUpdateUI(lat, lng);
+
+    const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`;
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      document.getElementById("alamat-dipilih").value = data.display_name || "Lokasi tidak ditemukan";
+    } catch (error) {
+      document.getElementById("alamat-dipilih").value = "Gagal mengambil lokasi";
+    }
+  });
+
+  // --- AUTOCOMPLETE ---
+  const alamatInput = document.getElementById('alamat-dipilih');
+  const resultBox = document.getElementById('autocomplete-results');
+  let debounceTimer;
+
+  alamatInput.addEventListener('input', function () {
+    const keyword = this.value;
+    clearTimeout(debounceTimer);
+
+    if (keyword.length < 3) {
+      resultBox.innerHTML = '';
+      resultBox.classList.add('hidden');
+      return;
+    }
+
+    debounceTimer = setTimeout(async () => {
+      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(keyword)}&addressdetails=1&limit=5`;
       try {
         const response = await fetch(url);
-        const data = await response.json();
-        document.getElementById("alamat-dipilih").value = data.display_name || "Lokasi tidak ditemukan";
+        const results = await response.json();
+
+        resultBox.innerHTML = '';
+        if (results.length === 0) {
+          resultBox.innerHTML = '<div class="px-4 py-2 text-sm text-gray-500">Tidak ditemukan</div>';
+        } else {
+          results.forEach(result => {
+            const item = document.createElement('div');
+            item.className = 'px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm';
+            item.textContent = result.display_name;
+
+            item.addEventListener('click', () => {
+              alamatInput.value = result.display_name;
+              resultBox.classList.add('hidden');
+
+              const lat = parseFloat(result.lat);
+              const lon = parseFloat(result.lon);
+
+              if (marker) {
+                marker.setLatLng([lat, lon]);
+              } else {
+                marker = L.marker([lat, lon]).addTo(peta);
+              }
+              peta.setView([lat, lon], 15);
+              findNearestStoreAndUpdateUI(lat, lon);
+            });
+
+            resultBox.appendChild(item);
+          });
+        }
+
+        resultBox.classList.remove('hidden');
       } catch (error) {
-        document.getElementById("alamat-dipilih").value = "Gagal mengambil lokasi";
+        resultBox.innerHTML = '<div class="px-4 py-2 text-sm text-red-500">Gagal mengambil data</div>';
+        resultBox.classList.remove('hidden');
       }
-    });
-  </script>
+    }, 500);
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!alamatInput.contains(e.target) && !resultBox.contains(e.target)) {
+      resultBox.classList.add('hidden');
+    }
+  });
+</script>
+
 </body>
 
 </html>

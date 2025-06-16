@@ -1,72 +1,85 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lupa Password</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-    <!-- Google Fonts: Inter -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Forget Password - Lily Bakery</title>
+    @vite('resources/css/app.css')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8f9fa;
-        }
-        .card-container {
-            max-width: 500px;
-            margin: auto;
-            background-color: #ffffff;
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            margin-top: 50px;
-        }
-        .btn-primary {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
-        }
-        .btn-primary:hover {
-            background-color: #0b5ed7;
-            border-color: #0a58ca;
-        }
-    </style>
 </head>
-<body>
+<body class="antialiased bg-white min-h-screen font-inter">
 
-<div class="container py-5">
-    <div class="card-container">
-        <h2 class="mb-4 text-center">Lupa Password</h2>
+    {{-- Memuat header dari layout --}}
+    @include('layouts.header')
 
-        {{-- Tampilkan pesan sukses --}}
-        @if(session('message'))
-            <div class="alert alert-success">{{ session('message') }}</div>
-        @endif
+    <!-- Login Section - Konten utama form -->
+    <section class="flex items-center justify-center py-12 px-4 pt-40">
+        <div class="w-full max-w-sm sm:max-w-md md:max-w-lg">
+            <div class="bg-[#EDF3F7] rounded-2xl shadow-lg p-6 sm:p-8 md:p-14">
+                <div class="text-center mb-6 sm:mb-8">
+                    <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">Lupa Password?</h2>
+                    <p class="text-gray-600 text-sm sm:text-base leading-relaxed">
+                        Masukkan email terdaftar Anda untuk menerima kode OTP.
+                    </p>
+                </div>
 
-        {{-- Tampilkan pesan error --}}
-        @if(session('error'))
-            <div class="alert alert-danger">{{ session('error') }}</div>
-        @endif
+                {{-- Tampilkan pesan sukses --}}
+                @if(session('message'))
+                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-md relative mb-4" role="alert">
+                        <span class="block sm:inline">{{ session('message') }}</span>
+                    </div>
+                @endif
 
-        <form action="{{ route('forgot.password.sendOtp') }}" method="POST">
-            @csrf
+                {{-- Tampilkan pesan error --}}
+                @if(session('error'))
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md relative mb-4" role="alert">
+                        <span class="block sm:inline">{{ session('error') }}</span>
+                    </div>
+                @endif
 
-            <div class="mb-3">
-                <label for="email" class="form-label">Email Terdaftar</label>
-                <input type="email" name="email" id="email" class="form-control" value="{{ old('email') }}" required>
-                @error('email')
-                    <small class="text-danger">{{ $message }}</small>
-                @enderror
+                <form action="{{ route('forgot.password.sendOtp') }}" method="POST" class="space-y-6">
+                    @csrf
+
+                    <!-- Email Terdaftar -->
+                    <div>
+                        <label for="email" class="block text-gray-700 text-sm font-medium mb-2">Email Terdaftar</label>
+                        <input
+                            type="email"
+                            name="email"
+                            id="email"
+                            placeholder="Masukkan email Anda"
+                            class="w-full px-4 py-3 bg-white rounded-full border border-transparent focus:outline-none focus:ring-2 focus:ring-pink-400 transition duration-300 text-sm sm:text-base"
+                            value="{{ old('email') }}"
+                            required
+                        />
+                        @error('email')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Kirim OTP Button -->
+                    <button
+                        type="submit"
+                        class="w-full bg-[#E59CAA] hover:bg-[#D88D9A] text-white py-3 rounded-full font-medium transition duration-300 shadow-md"
+                    >
+                        Kirim OTP
+                    </button>
+                </form>
+
+                <!-- Kembali ke Login -->
+                <div class="text-center mt-6 text-sm sm:text-base">
+                    <p class="text-gray-600">
+                        Kembali ke halaman login?
+                        <a href="{{ url('/login') }}" class="text-pink-400 hover:underline font-medium">Klik di sini</a>
+                    </p>
+                </div>
             </div>
+        </div>
+    </section>
 
-            <div class="d-grid">
-                <button type="submit" class="btn btn-primary btn-lg">Kirim OTP</button>
-            </div>
-        </form>
-    </div>
-</div>
+    {{-- Memuat footer dari layout --}}
+    @include('layouts.footer')
 
-<!-- Bootstrap JS Bundle -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 </body>
 </html>

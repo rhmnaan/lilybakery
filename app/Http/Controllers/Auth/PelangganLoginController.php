@@ -26,24 +26,33 @@ class PelangganLoginController extends Controller
      */
     public function login(Request $request): RedirectResponse
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
+        // Validasi input: login (bisa email / telp) dan password wajib diisi
+        $request->validate([
+            'login' => ['required'],
             'password' => ['required'],
         ]);
 
-        // Coba autentikasi menggunakan guard 'pelanggan'
+        // Deteksi apakah login input berupa email atau nomor telepon
+        $loginType = filter_var($request->input('login'), FILTER_VALIDATE_EMAIL) ? 'email' : 'telp';
+
+        // Siapkan credentials sesuai loginType
+        $credentials = [
+            $loginType => $request->input('login'),
+            'password' => $request->input('password'),
+        ];
+
+        // Coba login dengan guard pelanggan
         if (Auth::guard('pelanggan')->attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-            // Redirect ke halaman setelah login berhasil (misalnya dashboard pelanggan)
-            // Jika ada intended URL (halaman yang coba diakses sebelum login), redirect ke sana
-            return redirect()->intended('/'); // Buat rute ini nanti
+            return redirect()->intended('/'); // atau rute dashboard pelanggan kamu
         }
 
-        // Jika autentikasi gagal
+        // Jika gagal login
         return back()->withErrors([
-            'email' => 'Email atau password yang Anda masukkan salah.',
-        ])->onlyInput('email');
+            'login' => 'Email / No. Telepon atau password yang Anda masukkan salah.',
+        ])->onlyInput('login');
     }
+
 
     /**
      * Menangani permintaan logout pelanggan.

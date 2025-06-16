@@ -109,7 +109,7 @@
                         <img src="/images/menu/cake.jpg" alt="Cake" class="w-10 h-10 rounded-full object-cover">
                         <span class="font-questrial text-[16px] font-normal ml-3 text-gray-700">Cake</span>
                     </a>
-                    <a href="{{ url('/custom-cakes') }}" class="flex items-center py-2 hover:bg-gray-100 rounded pl-20">
+                    <a href="{{ url('/menu/Custom Cake') }}" class="flex items-center py-2 hover:bg-gray-100 rounded pl-20">
                         <img src="/images/menu/customCake.jpg" alt="Custom Cake" class="w-10 h-10 rounded-full object-cover">
                         <span class="font-questrial text-[16px] font-normal ml-3 text-gray-700">Custom Cake</span>
                     </a>
@@ -144,10 +144,20 @@
             <!-- Bagian kanan desktop -->
             <div class="hidden md:flex flex-col items-end mt-2">
               <div class="flex items-center space-x-4">
-                    <a href="{{ url('/keranjang') }}"
-                        class="bg-[#EDF3F7] px-5 py-2 rounded-full text-[#707070] hover:bg-lily-pink transition duration-300 font-bold">
-                        CART <i class="fas fa-shopping-cart ml-1"></i>
-                    </a>
+                    @auth('pelanggan')
+                    {{-- Jika pelanggan sudah login --}}
+                        <a href="{{ url('/keranjang') }}"
+                            class="bg-[#EDF3F7] px-5 py-2 rounded-full text-[#707070] hover:bg-lily-pink transition duration-300 font-bold">
+                            CART <i class="fas fa-shopping-cart ml-1"></i>
+                        </a>
+                    @else
+                        {{-- Jika pelanggan belum login --}}
+                        <a href="javascript:void(0);"
+                            onclick="showLoginModal()"
+                            class="bg-[#EDF3F7] px-5 py-2 rounded-full text-[#707070] hover:bg-lily-pink transition duration-300 font-bold">
+                            CART <i class="fas fa-shopping-cart ml-1"></i>
+                        </a>
+                    @endauth
 
                     @auth('pelanggan')
                         {{-- Jika pelanggan sudah login --}}

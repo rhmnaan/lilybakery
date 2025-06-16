@@ -3,7 +3,7 @@
 @section('content')
 <div class="bg-[#FFF1EA] min-h-screen font-sans p-8">
     <div class="flex bg-[#FFFEFB] rounded-lg shadow-[0_35px_35px_rgba(0,0,0,0.25)] overflow-hidden" style="max-height: calc(100vh - 4rem);">
-        
+
         {{-- Left Sidebar --}}
         @include('Admin.layouts.sidebar')
 
@@ -11,7 +11,7 @@
         <div class="flex-1 p-8 flex flex-col overflow-hidden">
             <div class="flex justify-between items-center mb-8 flex-shrink-0">
                 <h1 class="text-3xl font-bold text-gray-800">PRODUK TERSEDIA</h1>
-                
+
                 <div class="flex items-center space-x-4">
                     @if (request('filter_promotion') === 'true')
                         <!-- Tombol Tambah Promosi -->
@@ -34,6 +34,11 @@
             @if (session('success'))
                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4 flex-shrink-0" role="alert">
                     <span class="block sm:inline">{{ session('success') }}</span>
+                </div>
+            @endif
+            @if (session('error'))
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 flex-shrink-0" role="alert">
+                    <span class="block sm:inline">{{ session('error') }}</span>
                 </div>
             @endif
             @if ($errors->any())
@@ -60,11 +65,11 @@
                 @endphp
                 <a href="{{ getFilterUrl(['filter_status' => 'active']) }}"
                    class="{{ $filterBaseClasses }} {{ $activeFilters['status'] == 'active' ? $activeFilterClasses : $inactiveFilterClasses }}">
-                   ACTIVE
+                    ACTIVE
                 </a>
                 <a href="{{ getFilterUrl(['filter_status' => 'nonactive']) }}"
                    class="{{ $filterBaseClasses }} {{ $activeFilters['status'] == 'nonactive' ? $activeFilterClasses : $inactiveFilterClasses }}">
-                   NONACTIVE
+                    NONACTIVE
                 </a>
 
                 {{-- Dropdown Kategori (menggantikan tombol SEMUA) --}}
@@ -85,28 +90,28 @@
 
                 <a href="{{ getFilterUrl(['filter_promotion' => 'true']) }}"
                    class="{{ $filterBaseClasses }} {{ $activeFilters['promotion'] == 'true' ? $activeFilterClasses : $inactiveFilterClasses }}">
-                   PROMOTION
+                    PROMOTION
                 </a>
-                 <a href="{{ route('admin.product') }}" class="{{ $filterBaseClasses }} {{ $inactiveFilterClasses }} ml-auto"> Reset Filter
+                   <a href="{{ route('admin.product') }}" class="{{ $filterBaseClasses }} {{ $inactiveFilterClasses }} ml-auto"> Reset Filter
                 </a>
                 <div class="flex-1"></div>
                 {{-- Sort Dropdown --}}
                 <div class="relative">
-                     <select id="sort_by_dropdown"
-                        class="appearance-none bg-white text-black font-semibold border border-gray-200 rounded-full py-2 pl-4 pr-8 shadow-sm hover:bg-[#FFF1EA] focus:outline-none text-sm">
-                        <option value="{{ getFilterUrl(request()->except(['sort_by', 'sort_dir'])) }}">Sort By</option>
-                        <option value="{{ getFilterUrl(['sort_by' => 'nama_produk', 'sort_dir' => 'asc']) }}" @if(request('sort_by') == 'nama_produk' && request('sort_dir') == 'asc') selected @endif>Nama (A-Z)</option>
-                        <option value="{{ getFilterUrl(['sort_by' => 'nama_produk', 'sort_dir' => 'desc']) }}" @if(request('sort_by') == 'nama_produk' && request('sort_dir') == 'desc') selected @endif>Nama (Z-A)</option>
-                        <option value="{{ getFilterUrl(['sort_by' => 'harga', 'sort_dir' => 'asc']) }}" @if(request('sort_by') == 'harga' && request('sort_dir') == 'asc') selected @endif>Harga (Murah)</option>
-                        <option value="{{ getFilterUrl(['sort_by' => 'harga', 'sort_dir' => 'desc']) }}" @if(request('sort_by') == 'harga' && request('sort_dir') == 'desc') selected @endif>Harga (Mahal)</option>
-                        <option value="{{ getFilterUrl(['sort_by' => 'stok', 'sort_dir' => 'asc']) }}" @if(request('sort_by') == 'stok' && request('sort_dir') == 'asc') selected @endif>Stok (Sedikit)</option>
-                        <option value="{{ getFilterUrl(['sort_by' => 'stok', 'sort_dir' => 'desc']) }}" @if(request('sort_by') == 'stok' && request('sort_dir') == 'desc') selected @endif>Stok (Banyak)</option>
-                         <option value="{{ getFilterUrl(['sort_by' => 'status', 'sort_dir' => 'asc']) }}" @if(request('sort_by') == 'status' && request('sort_dir') == 'asc') selected @endif>Status (Non-Aktif dulu)</option>
-                        <option value="{{ getFilterUrl(['sort_by' => 'status', 'sort_dir' => 'desc']) }}" @if(request('sort_by') == 'status' && request('sort_dir') == 'desc') selected @endif>Status (Aktif dulu)</option>
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-600">
-                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M7 7l3-3 3 3m0 6l-3 3-3-3" /></svg>
-                    </div>
+                       <select id="sort_by_dropdown"
+                           class="appearance-none bg-white text-black font-semibold border border-gray-200 rounded-full py-2 pl-4 pr-8 shadow-sm hover:bg-[#FFF1EA] focus:outline-none text-sm">
+                           <option value="{{ getFilterUrl(request()->except(['sort_by', 'sort_dir'])) }}">Sort By</option>
+                           <option value="{{ getFilterUrl(['sort_by' => 'nama_produk', 'sort_dir' => 'asc']) }}" @if(request('sort_by') == 'nama_produk' && request('sort_dir') == 'asc') selected @endif>Nama (A-Z)</option>
+                           <option value="{{ getFilterUrl(['sort_by' => 'nama_produk', 'sort_dir' => 'desc']) }}" @if(request('sort_by') == 'nama_produk' && request('sort_dir') == 'desc') selected @endif>Nama (Z-A)</option>
+                           <option value="{{ getFilterUrl(['sort_by' => 'harga', 'sort_dir' => 'asc']) }}" @if(request('sort_by') == 'harga' && request('sort_dir') == 'asc') selected @endif>Harga (Murah)</option>
+                           <option value="{{ getFilterUrl(['sort_by' => 'harga', 'sort_dir' => 'desc']) }}" @if(request('sort_by') == 'harga' && request('sort_dir') == 'desc') selected @endif>Harga (Mahal)</option>
+                           <option value="{{ getFilterUrl(['sort_by' => 'stok', 'sort_dir' => 'asc']) }}" @if(request('sort_by') == 'stok' && request('sort_dir') == 'asc') selected @endif>Stok (Sedikit)</option>
+                           <option value="{{ getFilterUrl(['sort_by' => 'stok', 'sort_dir' => 'desc']) }}" @if(request('sort_by') == 'stok' && request('sort_dir') == 'desc') selected @endif>Stok (Banyak)</option>
+                            <option value="{{ getFilterUrl(['sort_by' => 'status', 'sort_dir' => 'asc']) }}" @if(request('sort_by') == 'status' && request('sort_dir') == 'asc') selected @endif>Status (Non-Aktif dulu)</option>
+                           <option value="{{ getFilterUrl(['sort_by' => 'status', 'sort_dir' => 'desc']) }}" @if(request('sort_by') == 'status' && request('sort_dir') == 'desc') selected @endif>Status (Aktif dulu)</option>
+                       </select>
+                       <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-600">
+                           <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M7 7l3-3 3 3m0 6l-3 3-3-3" /></svg>
+                       </div>
                 </div>
             </div>
 
@@ -177,9 +182,10 @@
                                 $today = \Carbon\Carbon::today();
                             @endphp
 
+                            {{-- Tombol Edit Promo --}}
                             @if ($produk->promo && $produk->promo->tanggal_mulai <= $today && $produk->promo->tanggal_berakhir >= $today)
-                                <button 
-                                    onclick="openModal('{{ $produk->id }}')" 
+                                <button
+                                    onclick="openEditPromoModal('{{ $produk->kode_produk }}')"
                                     class="bg-yellow-400 hover:bg-yellow-500 text-gray-800 font-bold py-2 px-4 rounded-lg shadow-sm w-24 text-center text-sm">
                                     Edit Promo
                                 </button>
@@ -194,38 +200,41 @@
             </div>
             <!-- Modal Edit Promo -->
             <div id="editPromoModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-                <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6 relative">
-                    <button onclick="closeModal()" class="absolute top-2 right-2 text-gray-500 hover:text-red-500">&times;</button>
-                    <h2 class="text-lg font-semibold mb-4">Edit Promosi Produk</h2>
-                    <form id="editPromoForm" method="POST">
-                        @csrf
-                        @method('PUT')
+                <div class="bg-[#FFEAE5] p-6 rounded-2xl w-full max-w-md shadow-xl relative mx-4"> {{-- Sesuaikan lebar dan padding --}}
+                    <h2 class="text-2xl font-bold mb-4 text-[#3D1F1F]">Edit Promosi Produk</h2>
+                    
+                    <!-- Kontainer yang bisa di-scroll untuk form -->
+                    <div class="overflow-y-auto max-h-[calc(100vh-16rem)] pr-2">
+                        <form id="editPromoForm" method="POST">
+                            @csrf
+                            @method('PUT')
 
-                        <div class="mb-4">
-                            <label for="diskon_persen" class="block text-sm font-medium text-gray-700">Diskon (%)</label>
-                            <input type="number" name="diskon_persen" id="diskon_persen" class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
-                        </div>
+                            <div class="mb-3">
+                                <label for="edit_promo_diskon_persen" class="block text-sm font-semibold mb-1 text-gray-700">Diskon (%)</label>
+                                <input type="number" name="diskon_persen" id="edit_promo_diskon_persen" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]" required>
+                            </div>
 
-                        <div class="mb-4">
-                            <label for="deskripsi_promo" class="block text-sm font-medium text-gray-700">Deskripsi Promosi</label>
-                            <textarea name="deskripsi_promo" id="deskripsi_promo" class="form-textarea mt-1 block w-full rounded-md border-gray-300 shadow-sm" rows="3"></textarea>
-                        </div>
+                            <div class="mb-3">
+                                <label for="edit_promo_deskripsi_promo" class="block text-sm font-semibold mb-1 text-gray-700">Deskripsi Promosi</label>
+                                <textarea name="deskripsi_promo" id="edit_promo_deskripsi_promo" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]" rows="3"></textarea>
+                            </div>
 
-                        <div class="mb-4">
-                            <label for="tanggal_mulai" class="block text-sm font-medium text-gray-700">Tanggal Mulai</label>
-                            <input type="date" name="tanggal_mulai" id="tanggal_mulai" class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
-                        </div>
+                            <div class="mb-3">
+                                <label for="edit_promo_tanggal_mulai" class="block text-sm font-semibold mb-1 text-gray-700">Tanggal Mulai</label>
+                                <input type="date" name="tanggal_mulai" id="edit_promo_tanggal_mulai" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]" required>
+                            </div>
 
-                        <div class="mb-4">
-                            <label for="tanggal_berakhir" class="block text-sm font-medium text-gray-700">Tanggal Berakhir</label>
-                            <input type="date" name="tanggal_berakhir" id="tanggal_berakhir" class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
-                        </div>
+                            <div class="mb-4">
+                                <label for="edit_promo_tanggal_berakhir" class="block text-sm font-semibold mb-1 text-gray-700">Tanggal Berakhir</label>
+                                <input type="date" name="tanggal_berakhir" id="edit_promo_tanggal_berakhir" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]" required>
+                            </div>
+                        </form>
+                    </div>
 
-                        <div class="flex justify-end space-x-2">
-                            <button type="button" onclick="closeModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg">Batal</button>
-                            <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg">Simpan</button>
-                        </div>
-                    </form>
+                    <div class="flex justify-end space-x-3 mt-6">
+                        <button type="button" onclick="closeEditPromoModal()" class="bg-gray-200 border border-gray-300 px-6 py-2 rounded-lg text-gray-700 hover:bg-gray-300 font-semibold">Batal</button>
+                        <button type="submit" form="editPromoForm" class="bg-[#C68686] text-white px-6 py-2 rounded-lg hover:bg-[#a86e6e] font-semibold">Simpan Perubahan</button>
+                    </div>
                 </div>
             </div>
             {{-- Pagination --}}
@@ -270,7 +279,7 @@
                     <label class="block text-sm font-semibold mb-1 text-gray-700">Gambar Produk</label>
                     <input type="file" name="gambar" class="w-full p-2 rounded-md border border-gray-300 bg-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#FFF1EA] file:text-[#E59CAA] hover:file:bg-[#E59CAA] hover:file:text-white" required>
                 </div>
-                 <div class="mb-3">
+                <div class="mb-3">
                     <label class="block text-sm font-semibold mb-1 text-gray-700">Status Produk</label>
                     <select name="status" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]">
                         <option value="1" {{ old('status', '1') == '1' ? 'selected' : '' }}>Aktif (Tampil di User)</option>
@@ -291,106 +300,114 @@
 
     {{-- Modal Edit Produk --}}
     <div id="editModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-        <div class="bg-[#FFEAE5] p-8 rounded-2xl w-full max-w-md shadow-xl relative mx-4">
-            <h2 class="text-2xl font-bold mb-6 text-[#3D1F1F]">Edit Produk</h2>
-            <form id="editProductForm" method="POST" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-                <div class="mb-3">
-                    <label class="block text-sm font-semibold mb-1 text-gray-700">Nama Produk</label>
-                    <input type="text" name="nama_produk" id="edit_nama_produk" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]" placeholder="Nama Produk" required>
-                </div>
-                 <div class="grid grid-cols-2 gap-4 mb-3">
-                    <div>
-                        <label class="block text-sm font-semibold mb-1 text-gray-700">Harga</label>
-                        <input type="number" name="harga" id="edit_harga" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]" placeholder="Harga" required>
+        <div class="bg-[#FFEAE5] p-6 rounded-2xl w-full max-w-md shadow-xl relative mx-4">
+            <h2 class="text-2xl font-bold mb-4 text-[#3D1F1F]">Edit Produk</h2>
+
+            <!-- Kontainer yang bisa di-scroll untuk form -->
+            <div class="overflow-y-auto max-h-[calc(100vh-16rem)] pr-2"> {{-- pr-2 untuk sedikit padding agar scrollbar tidak menempel --}}
+                <form id="editProductForm" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+                    <div class="mb-3">
+                        <label class="block text-sm font-semibold mb-1 text-gray-700">Nama Produk</label>
+                        <input type="text" name="nama_produk" id="edit_nama_produk" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]" placeholder="Nama Produk" required>
                     </div>
-                    <div>
-                        <label class="block text-sm font-semibold mb-1 text-gray-700">Stock</label>
-                        <input type="number" name="stok" id="edit_stok" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]" placeholder="Stock" required>
+                    <div class="grid grid-cols-2 gap-4 mb-3">
+                        <div>
+                            <label class="block text-sm font-semibold mb-1 text-gray-700">Harga</label>
+                            <input type="number" name="harga" id="edit_harga" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]" placeholder="Harga" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-1 text-gray-700">Stock</label>
+                            <input type="number" name="stok" id="edit_stok" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]" placeholder="Stock" required>
+                        </div>
                     </div>
-                </div>
-                <div class="mb-3">
-                    <label class="block text-sm font-semibold mb-1 text-gray-700">Kategori</label>
-                    <select name="id_kategori" id="edit_id_kategori" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]" required>
-                        @foreach($kategoris as $kategori)
-                        <option value="{{ $kategori->id_kategori }}">{{ $kategori->nama_kategori }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label class="block text-sm font-semibold mb-1 text-gray-700">Gambar Produk (Kosongkan jika tidak ingin diubah)</label>
-                    <input type="file" name="gambar" id="edit_gambar_input" class="w-full p-2 rounded-md border border-gray-300 bg-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#FFF1EA] file:text-[#E59CAA] hover:file:bg-[#E59CAA] hover:file:text-white">
-                    <img id="edit_current_image" src="" alt="Current Image" class="mt-2 max-h-24 rounded hidden"/>
-                </div>
-                 <div class="mb-3">
-                    <label class="block text-sm font-semibold mb-1 text-gray-700">Status Produk</label>
-                    <select name="status" id="edit_status" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]">
-                        <option value="1">Aktif (Tampil di User)</option>
-                        <option value="0">Non-Aktif (Sembunyikan dari User)</option>
-                    </select>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-semibold mb-1 text-gray-700">Deskripsi</label>
-                    <textarea name="deskripsi" id="edit_deskripsi" rows="3" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]" placeholder="Deskripsi Produk"></textarea>
-                </div>
-                <div class="flex justify-end space-x-3">
-                    <button type="button" data-modal-id="editModal" class="btn-close-modal bg-gray-200 border border-gray-300 px-6 py-2 rounded-lg text-gray-700 hover:bg-gray-300 font-semibold">Batal</button>
-                    <button type="submit" class="bg-[#C68686] text-white px-6 py-2 rounded-lg hover:bg-[#a86e6e] font-semibold">Simpan Perubahan</button>
-                </div>
-            </form>
+                    <div class="mb-3">
+                        <label class="block text-sm font-semibold mb-1 text-gray-700">Kategori</label>
+                        <select name="id_kategori" id="edit_id_kategori" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]" required>
+                            @foreach($kategoris as $kategori)
+                            <option value="{{ $kategori->id_kategori }}">{{ $kategori->nama_kategori }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-semibold mb-1 text-gray-700">Gambar Produk (Kosongkan jika tidak ingin diubah)</label>
+                        <input type="file" name="gambar" id="edit_gambar_input" class="w-full p-2 rounded-md border border-gray-300 bg-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#FFF1EA] file:text-[#E59CAA] hover:file:bg-[#E59CAA] hover:file:text-white">
+                        <img id="edit_current_image" src="" alt="Current Image" class="mt-2 max-h-24 rounded hidden"/>
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-semibold mb-1 text-gray-700">Status Produk</label>
+                        <select name="status" id="edit_status" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]">
+                            <option value="1">Aktif (Tampil di User)</option>
+                            <option value="0">Non-Aktif (Sembunyikan dari User)</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold mb-1 text-gray-700">Deskripsi</label>
+                        <textarea name="deskripsi" id="edit_deskripsi" rows="3" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]" placeholder="Deskripsi Produk"></textarea>
+                    </div>
+                </form>
+            </div>
+
+            <div class="flex justify-end space-x-3 mt-6"> {{-- mt-6 untuk jarak dari konten form yang bisa di-scroll --}}
+                <button type="button" data-modal-id="editModal" class="btn-close-modal bg-gray-200 border border-gray-300 px-6 py-2 rounded-lg text-gray-700 hover:bg-gray-300 font-semibold">Batal</button>
+                <button type="submit" form="editProductForm" class="bg-[#C68686] text-white px-6 py-2 rounded-lg hover:bg-[#a86e6e] font-semibold">Simpan Perubahan</button>
+            </div>
         </div>
     </div>
 
     <!-- Modal Tambah Promosi -->
     <div id="addPromoModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-xl p-6 relative">
-            <button onclick="closeAddPromoModal()" class="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-xl">&times;</button>
-            <h2 class="text-lg font-semibold mb-4">Tambah Promosi Baru</h2>
-            
-            <form action="{{ route('admin.promo.store') }}" method="POST">
-                @csrf
+        <div class="bg-[#FFEAE5] p-6 rounded-2xl w-full max-w-md shadow-xl relative mx-4"> {{-- Sesuaikan lebar dan padding --}}
+            <h2 class="text-2xl font-bold mb-4 text-[#3D1F1F]">Tambah Promosi Baru</h2>
 
-                <div class="mb-4">
-                    <label for="search_produk" class="block text-sm font-medium text-gray-700">Cari Produk</label>
-                    <input type="text" id="search_produk" onkeyup="filterProduk()" placeholder="Ketik nama produk..." class="form-input mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
+            <!-- Kontainer yang bisa di-scroll untuk form Tambah Promosi -->
+            <div class="overflow-y-auto max-h-[calc(100vh-16rem)] pr-2">
+                <form id="addPromoForm" action="{{ route('admin.promo.store') }}" method="POST">
+                    @csrf
 
-                <div class="mb-4">
-                    <label for="id_produk" class="block text-sm font-medium text-gray-700">Pilih Produk</label>
-                    <select name="id_produk" id="produk_select" class="form-select mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
-                        @foreach ($produks as $produk)
-                            <option value="{{ $produk->id }}">{{ $produk->nama_produk }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="mb-4">
-                    <label for="diskon_persen" class="block text-sm font-medium text-gray-700">Diskon (%)</label>
-                    <input type="number" name="diskon_persen" class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
-                </div>
-
-                <div class="mb-4">
-                    <label for="deskripsi_promo" class="block text-sm font-medium text-gray-700">Deskripsi Promosi</label>
-                    <textarea name="deskripsi_promo" class="form-textarea mt-1 block w-full rounded-md border-gray-300 shadow-sm" rows="3"></textarea>
-                </div>
-
-                <div class="mb-4 grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Tanggal Mulai</label>
-                        <input type="date" name="tanggal_mulai" class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                    <div class="mb-3">
+                        <label for="search_produk_add_promo" class="block text-sm font-semibold mb-1 text-gray-700">Cari Produk</label>
+                        <input type="text" id="search_produk_add_promo" onkeyup="filterProduk('add')" placeholder="Ketik nama produk..." class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]">
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Tanggal Berakhir</label>
-                        <input type="date" name="tanggal_berakhir" class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
-                    </div>
-                </div>
 
-                <div class="flex justify-end space-x-2">
-                    <button type="button" onclick="closeAddPromoModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg">Batal</button>
-                    <button type="submit" class="bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2 px-4 rounded-lg">Simpan</button>
-                </div>
-            </form>
+                    <div class="mb-3">
+                        <label for="produk_select_add_promo" class="block text-sm font-semibold mb-1 text-gray-700">Pilih Produk</label>
+                        <select name="id_produk" id="produk_select_add_promo" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]" required>
+                            <option value="">Pilih Produk</option>
+                            @foreach ($produks as $produk)
+                                <option value="{{ $produk->kode_produk }}">{{ $produk->nama_produk }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="add_promo_diskon_persen" class="block text-sm font-semibold mb-1 text-gray-700">Diskon (%)</label>
+                        <input type="number" name="diskon_persen" id="add_promo_diskon_persen" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="add_promo_deskripsi_promo" class="block text-sm font-semibold mb-1 text-gray-700">Deskripsi Promosi</label>
+                        <textarea name="deskripsi_promo" id="add_promo_deskripsi_promo" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]" rows="3"></textarea>
+                    </div>
+
+                    <div class="mb-4 grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold mb-1 text-gray-700">Tanggal Mulai</label>
+                            <input type="date" name="tanggal_mulai" id="add_promo_tanggal_mulai" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-1 text-gray-700">Tanggal Berakhir</label>
+                            <input type="date" name="tanggal_berakhir" id="add_promo_tanggal_berakhir" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="flex justify-end space-x-3 mt-6">
+                <button type="button" onclick="closeAddPromoModal()" class="bg-gray-200 border border-gray-300 px-6 py-2 rounded-lg text-gray-700 hover:bg-gray-300 font-semibold">Batal</button>
+                <button type="submit" form="addPromoForm" class="bg-[#C68686] text-white px-6 py-2 rounded-lg hover:bg-[#a86e6e] font-semibold">Simpan</button>
+            </div>
         </div>
     </div>
 
@@ -399,46 +416,73 @@
 
 @push('scripts')
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    function openModal(produkId) {
-    const modal = document.getElementById('editPromoModal');
-    modal.classList.remove('hidden');
+    // Fungsi untuk membuka modal Edit Promo
+    function openEditPromoModal(produkKode) {
+        const modal = document.getElementById('editPromoModal');
+        modal.classList.remove('hidden');
 
-    fetch(`/admin/product/promo/${produkId}/edit`)
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('diskon_persen').value = data.diskon_persen || '';
-            document.getElementById('deskripsi_promo').value = data.deskripsi_promo || '';
-            document.getElementById('tanggal_mulai').value = data.tanggal_mulai || '';
-            document.getElementById('tanggal_berakhir').value = data.tanggal_berakhir || '';
-            document.getElementById('editPromoForm').action = `/admin/product/promo/${produkId}/update`;
-        })
-        .catch(error => {
-            alert('Gagal memuat data promo!');
-            console.error(error);
-        });
-}
+        // Fetch data promo berdasarkan kode_produk
+        fetch(`/admin/product/promo/${produkKode}/edit`) // Sesuaikan route di backend
+            .then(response => {
+                if (!response.ok) {
+                    // Jika respons bukan 2xx, throw error agar ditangkap catch
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Pastikan data yang diterima sesuai struktur
+                if (data.promo) { // Asumsi backend mengembalikan objek { promo: { ... } }
+                    document.getElementById('edit_promo_diskon_persen').value = data.promo.diskon_persen || '';
+                    document.getElementById('edit_promo_deskripsi_promo').value = data.promo.deskripsi_promo || '';
+                    document.getElementById('edit_promo_tanggal_mulai').value = data.promo.tanggal_mulai || '';
+                    document.getElementById('edit_promo_tanggal_berakhir').value = data.promo.tanggal_berakhir || '';
+                    document.getElementById('editPromoForm').action = `/admin/product/promo/${produkKode}/update`; // Sesuaikan route di backend
+                } else {
+                    Swal.fire('Error', 'Data promo tidak ditemukan untuk produk ini.', 'error');
+                    closeEditPromoModal();
+                }
+            })
+            .catch(error => {
+                Swal.fire('Error', 'Gagal memuat data promo: ' + error.message, 'error');
+                console.error('Gagal memuat data promo:', error);
+                closeEditPromoModal();
+            });
+    }
 
-
-    function closeModal() {
+    // Fungsi untuk menutup modal Edit Promo
+    function closeEditPromoModal() {
         const modal = document.getElementById('editPromoModal');
         modal.classList.add('hidden');
+        document.getElementById('editPromoForm').reset(); // Reset form saat ditutup
     }
-</script>
 
-<script>
+    // Fungsi untuk membuka modal Tambah Promosi
     function openAddPromoModal() {
         document.getElementById('addPromoModal').classList.remove('hidden');
     }
 
+    // Fungsi untuk menutup modal Tambah Promosi
     function closeAddPromoModal() {
         document.getElementById('addPromoModal').classList.add('hidden');
+        document.getElementById('addPromoForm').reset(); // Reset form saat ditutup
     }
 
-    function filterProduk() {
-        const input = document.getElementById('search_produk').value.toLowerCase();
-        const select = document.getElementById('produk_select');
-        const options = select.options;
+    // Fungsi untuk filter produk di modal Tambah Promosi
+    function filterProduk(modalType) {
+        let input, select, options;
+        if (modalType === 'add') {
+            input = document.getElementById('search_produk_add_promo').value.toLowerCase();
+            select = document.getElementById('produk_select_add_promo');
+        }
+        // Tambahkan logic jika Anda punya search di modal edit promo juga
+        // else if (modalType === 'edit') { ... }
+
+        options = select.options;
 
         for (let i = 0; i < options.length; i++) {
             const optionText = options[i].text.toLowerCase();
@@ -446,7 +490,6 @@
         }
     }
 </script>
-
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -472,7 +515,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
             if (modalElement.id === 'addModal' && document.getElementById('addProductForm')) {
-                 // document.getElementById('addProductForm').reset(); // Laravel old() akan handle ini
+                 document.getElementById('addProductForm').reset(); // Reset form saat ditutup
             }
         }
     }
@@ -525,6 +568,12 @@ document.addEventListener('DOMContentLoaded', function () {
         if (event.key === "Escape") {
             if (addModalElement && !addModalElement.classList.contains('hidden')) closeModal(addModalElement);
             if (editModalElement && !editModalElement.classList.contains('hidden')) closeModal(editModalElement);
+            // Tambahkan ini untuk menutup modal edit promo juga
+            const editPromoModalElement = document.getElementById('editPromoModal');
+            if (editPromoModalElement && !editPromoModalElement.classList.contains('hidden')) closeEditPromoModal();
+            // Tambahkan ini untuk menutup modal tambah promo juga
+            const addPromoModalElement = document.getElementById('addPromoModal');
+            if (addPromoModalElement && !addPromoModalElement.classList.contains('hidden')) closeAddPromoModal();
         }
     });
 
@@ -561,7 +610,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         // Jika user mengklik 'Ya, Logout!', submit form
                         this.submit();
                     }
-            });
+                });
         });
     }
 </script>

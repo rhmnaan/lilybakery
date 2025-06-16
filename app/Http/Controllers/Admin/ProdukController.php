@@ -137,6 +137,12 @@ class ProdukController extends Controller
 
     public function destroy(Produk $produk)
     {
+        // Cek apakah produk terkait dengan order yang ada
+        if ($produk->detailOrder()->exists()) {
+            return redirect()->route('admin.product')->with('error', 'Produk tidak bisa dihapus karena sudah pernah dibeli.');
+        }
+
+        // Hapus file gambar jika ada
         if ($produk->gambar && File::exists(public_path($this->imagePath . $produk->gambar))) {
             File::delete(public_path($this->imagePath . $produk->gambar));
         }

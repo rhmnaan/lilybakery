@@ -12,6 +12,22 @@
     <script src="//unpkg.com/alpinejs" defer></script>
 
 </head>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function showLoginModal() {
+    Swal.fire({
+        icon: 'warning',
+        title: 'Akses Ditolak',
+        text: 'Silakan login untuk mengakses keranjang.',
+        showConfirmButton: true,
+        confirmButtonText: 'Login',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "{{ route('pelanggan.login.form') }}"; // pastikan ini route login-mu
+        }
+    });
+}
+</script>
 
 <body class="antialiased bg-white">
 

@@ -12,19 +12,21 @@ class ProdukController extends Controller
 {
     public function show(Produk $produk)
     {
+        // Memuat relasi kategori untuk produk yang sedang ditampilkan
         $produk->load('kategori');
 
+        // [TAMBAHAN] Buat penanda untuk memeriksa apakah ini produk custom cake
+        $is_custom_cake = ($produk->kategori && $produk->kategori->nama_kategori === 'Custom Cake');
+
+        // Logika untuk filter ulasan berdasarkan rating
         $ratingFilter = request()->query('rating');
-
-        $ulasansQuery = $produk->ulasan()->with('pelanggan')
-            ->orderBy('tanggal', 'desc');
-
+        $ulasansQuery = $produk->ulasan()->with('pelanggan')->orderBy('tanggal', 'desc');
         if ($ratingFilter && in_array($ratingFilter, [1, 2, 3, 4, 5])) {
             $ulasansQuery->where('rating', $ratingFilter);
         }
-
         $ulasans = $ulasansQuery->paginate(5)->withQueryString();
 
+        // Logika untuk statistik ulasan
         $ulasanStats = Ulasan::where('kode_produk', $produk->kode_produk)
             ->selectRaw('rating, count(*) as count')
             ->groupBy('rating')
@@ -37,6 +39,7 @@ class ProdukController extends Controller
             ? $ulasanStats->sum(fn($stat) => $stat->rating * $stat->count) / $totalUlasan
             : 0;
         
+        // Logika untuk memeriksa apakah pelanggan bisa memberikan ulasan
         $canReview = false;
         if (Auth::guard('pelanggan')->check()) {
             $pelanggan = Auth::guard('pelanggan')->user();
@@ -53,6 +56,7 @@ class ProdukController extends Controller
             $canReview = $hasBought && !$hasReviewed;
         }
 
+        // Kirim semua data ke view, termasuk penanda $is_custom_cake
         return view('product-detail', compact(
             'produk',
             'ulasans',
@@ -60,7 +64,8 @@ class ProdukController extends Controller
             'totalUlasan',
             'ulasanStats',
             'ratingFilter',
-            'canReview'
+            'canReview',
+            'is_custom_cake' // <-- Penanda ditambahkan di sini
         ));
     }
 }

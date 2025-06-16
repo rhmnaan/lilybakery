@@ -8,13 +8,6 @@
 
         {{-- Main Content --}}
         <div class="flex-1 p-8 flex flex-col overflow-hidden">
-            <div class="flex justify-between items-center mb-8 flex-shrink-0">
-                <h1 class="text-3xl font-bold text-gray-800">Customers</h1>
-                <button onclick="openAddModal()" class="bg-[#E59CAA] hover:bg-[#d48a98] text-white px-4 py-2 rounded-lg flex items-center shadow-md transition-colors">
-                    <i class="fas fa-plus mr-2"></i>
-                    Tambah Customer
-                </button>
-            </div>
 
             <div class="bg-white rounded-xl shadow p-4 overflow-hidden flex-grow">
                 <div class="overflow-y-auto h-full">

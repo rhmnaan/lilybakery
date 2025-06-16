@@ -55,7 +55,7 @@
 
   <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-20 mt-36">
     <div
-      class="grid grid-cols-3 gap-2 sm:gap-4 mb-10 max-w-screen-2xl mx-auto w-full px-4 sm:px-6 md:px-10 lg:px-20 text-sm sm:text-base lg:text-lg">
+      class="grid grid-cols-3 gap-2 sm:gap-4 mb-10 max-w-screen-2xl mx-auto w-full px-4 sm:px-6 md:px-10 lg:px-2 text-sm sm:text-base lg:text-lg">
       <div class="bg-[#D6A1A1] text-black px-4 py-2 rounded-full font-semibold text-center">1. Cart</div>
       <div class="bg-[#D6A1A1] text-black px-4 py-2 rounded-full font-semibold text-center">2. Order Info</div>
       <div class="bg-[#D6A1A1] text-black px-4 py-2 rounded-full font-semibold text-center">3. Payment</div>
@@ -123,12 +123,9 @@ if ($__empty_1): ?>
                 $payments = [
                   ['value' => 'bni_va', 'alt' => 'BNI VA', 'src' => 'bniLogo.png'],
                   ['value' => 'dana', 'alt' => 'DANA', 'src' => 'logoDana.png'],
-                  ['value' => 'shopeepay', 'alt' => 'ShopeePay', 'src' => 'logoShoopePay.png'],
                   ['value' => 'bri_va', 'alt' => 'BRI VA', 'src' => 'logoBRI.png'],
-                  ['value' => 'qris', 'alt' => 'OVO (via QRIS)', 'src' => 'logoOVO.png'],
                   ['value' => 'qris', 'alt' => 'QRIS', 'src' => 'logoQRIS.png'],
                   ['value' => 'bca_va', 'alt' => 'BCA VA', 'src' => 'logoBCA.png'],
-                  ['value' => 'gopay', 'alt' => 'GoPay', 'src' => 'logoGopay.png'],
                 ];
               ?>
               @foreach ($payments as $payment)

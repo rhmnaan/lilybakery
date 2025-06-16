@@ -1,48 +1,50 @@
 <div class="grid grid-cols-1 gap-6 overflow-y-auto flex-grow pr-2">
-    @forelse ($storeLocations as $store)
+    <?php if(isset($storeLocations) && $storeLocations->count() > 0): ?>
+        <?php $_currentLoopData = $storeLocations; $env->addLoop($currentLoopData); foreach($currentLoopData as $store): $env->incrementLoopIndices(); $loop = $_env->getLastLoop(); ?>
         <div class="bg-[#FFF1EA] rounded-lg shadow-lg p-6 flex items-start space-x-6">
-            {{-- Gambar Toko --}}
-            <img src="{{ asset('images/store/' . $store->img) }}"
-                alt="{{ $store->nama_toko }}"
+            
+            <img src="<?php echo e(asset('images/store/' . $store->img)); ?>"
+                alt="<?php echo e($store->nama_toko); ?>"
                 class="w-36 h-36 md:w-48 md:h-48 object-cover rounded-lg flex-shrink-0">
 
-            {{-- Info Toko --}}
+            
             <div class="flex-1">
                 <p class="text-gray-500 text-sm">Nama Toko:</p>
-                <h3 class="text-xl md:text-2xl font-semibold text-gray-800 mb-1">{{ $store->nama_toko }}</h3>
+                <h3 class="text-xl md:text-2xl font-semibold text-gray-800 mb-1"><?php echo e($store->nama_toko); ?></h3>
 
                 <p class="text-gray-500 text-sm">Alamat:</p>
-                <p class="text-base text-gray-700 mb-1">{{ $store->alamat }}</p>
+                <p class="text-base text-gray-700 mb-1"><?php echo e($store->alamat); ?></p>
 
                 <p class="text-gray-500 text-sm">Telepon:</p>
-                <p class="text-base text-gray-700 mb-1">{{ $store->telp }}</p>
+                <p class="text-base text-gray-700 mb-1"><?php echo e($store->telp); ?></p>
 
                 <p class="text-gray-500 text-sm">Link Lokasi:</p>
-                <a href="{{ $store->link_location }}" target="_blank"
+                <a href="<?php echo e($store->link_location); ?>" target="_blank"
                     class="inline-block text-sm text-white bg-pink-400 hover:bg-pink-500 px-4 py-2 rounded-full transition duration-300 mt-1">
                     Lihat Lokasi
                 </a>
             </div>
 
-            {{-- Tombol Aksi --}}
+            
             <div class="flex flex-col space-y-2 items-end flex-shrink-0">
-                {{-- Tombol Edit --}}
+                
                 <button
                     onclick="openEditModal(
-                        {{ $store->id_store }},
-                        '{{ addslashes($store->nama_toko) }}',
-                        '{{ addslashes($store->alamat) }}',
-                        '{{ addslashes($store->telp) }}',
-                        '{{ addslashes($store->link_location) }}',
-                        '{{ $store->latitude }}',
-                        '{{ $store->longitude }}'
+                        <?php echo e($store->id_store); ?>,
+                        '<?php echo e(addslashes($store->nama_toko)); ?>',
+                        '<?php echo e(addslashes($store->alamat)); ?>',
+                        '<?php echo e(addslashes($store->telp)); ?>',
+                        '<?php echo e(addslashes($store->link_location)); ?>',
+                        '<?php echo e($store->latitude); ?>',
+                        '<?php echo e($store->longitude); ?>'
                     )"
                     class="bg-yellow-400 hover:bg-yellow-500 text-gray-800 font-bold py-2 px-4 rounded-lg shadow-sm w-24 text-center text-sm">
                     Edit
                 </button>
 
-                {{-- Tombol Hapus --}}
-                <form action="">
+                <form action="<?php echo e(route('admin.store.destroy', $store->id_store)); ?>" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus toko ini?');">
+                    <?php echo csrf_field(); ?>
+                    <?php echo method_field('DELETE'); ?>
                     <button type="submit"
                         class="flex items-center justify-center bg-red-200 hover:bg-red-300 text-red-800 font-bold py-2 px-4 rounded-lg shadow-sm w-24 text-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
@@ -53,9 +55,10 @@
                 </form>
             </div>
         </div>
-    @empty
+        <?php endforeach; $_env->popLoop(); $loop = $_env->getLastLoop(); ?>
+    <?php else: ?>
         <div class="col-span-full text-center py-10">
             <p class="text-gray-500 text-xl">Belum ada lokasi toko yang tersedia.</p>
         </div>
-    @endforelse
+    <?php endif; ?>
 </div>

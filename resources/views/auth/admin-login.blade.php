@@ -76,13 +76,6 @@
                     </div>
 
 
-                    <!-- Forgot Password -->
-                    <div class="text-left">
-                        <a href="" class="text-gray-600 hover:text-pink-400 text-sm">
-                            Forgot password?
-                        </a>
-                    </div>
-
                     <!-- Login Button -->
                     <button
                         type="submit"

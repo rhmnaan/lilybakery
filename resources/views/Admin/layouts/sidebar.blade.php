@@ -13,6 +13,14 @@
             <i class="far fa-check-circle mr-3 text-xl"></i>
             <span>Dashboard</span>
         </a>
+
+        {{-- Kategori --}}
+        <a href="{{ route('admin.kategori') }}" class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]
+            @if(Request::routeIs('admin.kategori')) bg-[#F9D8D9] text-gray-900 font-semibold @endif">
+            <i class="fas fa-list-alt mr-3 text-xl"></i>
+            <span>Kategori</span>
+        </a>
+
         
 
         {{-- Product --}}

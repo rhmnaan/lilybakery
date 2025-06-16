@@ -24,6 +24,8 @@ use App\Http\Controllers\Admin\PromoController as AdminPromoController;
 use App\Http\Controllers\MidtransWebhookController;
 use App\Http\Controllers\Admin\AdminStoreController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Admin\KategoriController;
+
 
 use App\Http\Controllers\ProdukController as PublicProdukController;
 
@@ -145,6 +147,15 @@ Route::middleware(['auth:admin'])->group(function () {
         Route::post('/orders/store', [OrdersController::class, 'store'])->name('orders.store');
         Route::post('/orders/data', [OrdersController::class, 'data'])->name('orders.data');
 
+        // Halaman utama kategori
+        Route::get('/kategori', [KategoriController::class, 'index'])->name('kategori');
+        // Tambah kategori
+        Route::post('/kategori', [KategoriController::class, 'store'])->name('kategori.store');
+        // Update kategori
+        Route::put('/kategori/{id}', [KategoriController::class, 'update'])->name('kategori.update');
+        // Hapus kategori
+        Route::delete('/kategori/{id}', [KategoriController::class, 'destroy'])->name('kategori.destroy');
+
         // Route Untuk Halaman Pelanggan (Customer)
         Route::get('/customers', [CustomerController::class, 'index'])->name('customers');
         Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
@@ -207,11 +218,16 @@ Route::middleware(['auth:admin'])->group(function () {
         Route::delete('/settings/admins/{id}', [SettingController::class, 'destroyAdmin'])->name('settings.destroyAdmin');
 
         // Rute untuk halaman Store Admin
+        // Rute untuk halaman Store Admin
         Route::get('/store', [AdminStoreController::class, 'index'])->name('store');
         Route::get('/store/search', [AdminStoreController::class, 'search'])->name('store.search');
         Route::post('/store', [AdminStoreController::class, 'store'])->name('store.store');
-        Route::put('/admin/store/{id}', [AdminStoreController::class, 'update'])->name('admin.store.update');
+        Route::put('/store/{id}', [AdminStoreController::class, 'update'])->name('store.update');
 
+        // [TAMBAHKAN INI] Rute untuk menghapus toko
+        Route::delete('/store/{id}', [AdminStoreController::class, 'destroy'])->name('store.destroy');
+        
+      
     });
 });
 

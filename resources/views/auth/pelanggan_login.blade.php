@@ -30,14 +30,14 @@
                     <!-- Email / Mobile Number -->
                     <div>
                         <input
-                            type="email"
-                            name="email"
+                            type="text"
+                            name="login"
                             placeholder="Email / Mobile Number"
                             class="w-full px-4 py-3 bg-white rounded-full border border-transparent focus:outline-none focus:ring-2 focus:ring-pink-400 transition duration-300 text-sm sm:text-base"
-                            value="{{ old('email') }}"
+                            value="{{ old('login') }}"
                             required
                         />
-                        @error('email')
+                        @error('login')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>

@@ -37,7 +37,7 @@
         <p class="text-gray-600 text-sm sm:text-base">Mohon isi semua data yang diminta untuk menyelesaikan pendaftaran.</p>
       </div>
 
-      <form method="POST" action="">
+      <form method="POST" action=""{{ route('register') }}"">
         @csrf
 
         <!-- Name -->

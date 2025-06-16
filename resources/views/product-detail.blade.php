@@ -37,9 +37,9 @@
     @endif
 
     <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-40">
-        {{-- Menggunakan grid-cols-3 untuk layar medium dan lebih besar --}}
         <div class="grid md:grid-cols-3 gap-12 lg:gap-16 items-start">
 
+            {{-- Kolom 1: Gambar Produk --}}
             <div class="w-full md:col-span-1">
                 <div class="bg-pink-50 rounded-lg p-4 shadow-sm">
                     <img src="{{ $produk->gambar ? asset('images/products/' . $produk->gambar) : asset('images/placeholder.png') }}"
@@ -47,6 +47,7 @@
                 </div>
             </div>
 
+            {{-- Kolom 2: Informasi Produk --}}
             <div class="w-full md:col-span-1 space-y-4">
                 <p class="text-sm text-gray-500">
                     Menu &gt; <span
@@ -70,8 +71,25 @@
                 </p>
             </div>
 
+            {{-- Kolom 3: Aksi (Pemesanan) --}}
             <div class="w-full md:col-span-1">
+                {{-- [MODIFIKASI] Tampilkan blok yang berbeda berdasarkan kategori --}}
+                {{-- TAMPILAN NORMAL UNTUK PRODUK LAIN --}}
                 <div class="bg-gray-50 p-6 rounded-lg border shadow-sm space-y-5">
+                    <div class="text-center">
+                        <h3 class="text-xl font-semibold text-gray-800">Pemesanan Khusus</h3>
+                        <p class="text-gray-600 text-sm">
+                            Untuk kue kustom, pemesanan dan diskusi desain dilakukan via WhatsApp untuk memastikan
+                            hasilnya
+                            sesuai keinginan Anda.
+                        </p>
+                        {{-- Ganti NOMOR_WHATSAPP dengan nomor Anda --}}
+                        <a href="https://wa.me/6281234567890?text=Halo,%20saya%20tertarik%20untuk%20memesan%20custom%20cake%20'{{ urlencode($produk->nama_produk) }}'"
+                            target="_blank"
+                            class="w-full inline-block bg-green-500 hover:bg-green-600 text-white py-3 rounded-full transition duration-300 font-semibold">
+                            <i class="fab fa-whatsapp mr-2"></i> Hubungi untuk Pesan
+                        </a>
+                    </div>
                     <div class="flex items-center justify-between">
                         <div class="flex items-center border rounded-full overflow-hidden">
                             <button type="button" onclick="updateQty(-1)"
@@ -112,32 +130,35 @@
 
     @include('layouts.footer')
 
-    <script>
-        const unitPrice = {{ $produk->harga }};
-        const maxStock = {{ $produk->stok }};
-        const qtyDisplay = document.getElementById('quantity_display');
-        const addToCartQtyInput = document.getElementById('add_to_cart_quantity_input');
-        const buyNowQtyInput = document.getElementById('buy_now_quantity_input');
-        const priceTotalElement = document.getElementById('price-total');
+    {{-- Script hanya akan dimuat jika produk BUKAN custom cake --}}
+    @if (!isset($is_custom_cake) || !$is_custom_cake)
+        <script>
+            const unitPrice = {{ $produk->harga }};
+            const maxStock = {{ $produk->stok }};
+            const qtyDisplay = document.getElementById('quantity_display');
+            const addToCartQtyInput = document.getElementById('add_to_cart_quantity_input');
+            const buyNowQtyInput = document.getElementById('buy_now_quantity_input');
+            const priceTotalElement = document.getElementById('price-total');
 
-        function updateQty(change) {
-            let currentQty = parseInt(addToCartQtyInput.value);
-            let newQty = currentQty + change;
+            function updateQty(change) {
+                let currentQty = parseInt(addToCartQtyInput.value);
+                let newQty = currentQty + change;
 
-            if (newQty < 1) newQty = 1;
-            if (newQty > maxStock) {
-                newQty = maxStock;
-                alert('Kuantitas melebihi stok yang tersedia!');
+                if (newQty < 1) newQty = 1;
+                if (newQty > maxStock) {
+                    newQty = maxStock;
+                    alert('Kuantitas melebihi stok yang tersedia!');
+                }
+
+                qtyDisplay.textContent = newQty;
+                addToCartQtyInput.value = newQty;
+                buyNowQtyInput.value = newQty;
+
+                const total = newQty * unitPrice;
+                priceTotalElement.textContent = 'Rp ' + total.toLocaleString('id-ID');
             }
-
-            qtyDisplay.textContent = newQty;
-            addToCartQtyInput.value = newQty;
-            buyNowQtyInput.value = newQty;
-
-            const total = newQty * unitPrice;
-            priceTotalElement.textContent = 'Rp ' + total.toLocaleString('id-ID');
-        }
-    </script>
+        </script>
+    @endif
 </body>
 
 </html>

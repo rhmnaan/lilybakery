@@ -21,6 +21,9 @@ class Pelanggan extends Authenticatable // Changed from Model to Authenticatable
         'nama_pelanggan',
         'email',
         'password',
+        'otp',
+        'otp_expires_at',
+        'email_verified',
         'telp',
         'jenis_kelamin',
         'alamat',
@@ -34,7 +37,16 @@ class Pelanggan extends Authenticatable // Changed from Model to Authenticatable
      */
     protected $hidden = [
         'password',
-        'remember_token', // Add if you use "remember me" functionality
+        'remember_token',
+        'otp',
+        'otp_expires_at', // Add if you use "remember me" functionality
+    ];
+
+    protected $casts = [
+        // 'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'otp_expires_at' => 'datetime', // Cast this to datetime
+        'email_verified' => 'boolean',
     ];
 
     /**

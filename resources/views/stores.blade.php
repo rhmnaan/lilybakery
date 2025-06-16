@@ -98,6 +98,6 @@
         });
     });
 </script>
-
+@include('layouts.wa')
 </body>
 </html>

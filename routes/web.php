@@ -3,13 +3,13 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\PelangganLoginController;
 use App\Http\Controllers\Auth\AdminLoginController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\StoreLocationController;
 use App\Http\Controllers\PelangganProfileController;
 use App\Http\Controllers\PromoController;
 use App\Http\Controllers\KeranjangController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PelangganOrderController;
-use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrdersController;
 use App\Http\Controllers\Admin\CustomerController;
@@ -23,6 +23,7 @@ use App\Http\Controllers\CustomCakeController;
 use App\Http\Controllers\Admin\PromoController as AdminPromoController;
 use App\Http\Controllers\MidtransWebhookController;
 use App\Http\Controllers\Admin\AdminStoreController;
+use App\Http\Controllers\Api\AuthController;
 
 use App\Http\Controllers\ProdukController as PublicProdukController;
 
@@ -161,6 +162,7 @@ Route::middleware(['auth:admin'])->group(function () {
         Route::put('/settings/admins/{id}', [SettingController::class, 'updateAdmin'])->name('settings.updateAdmin');
         Route::delete('/settings/admins/{id}', [SettingController::class, 'destroyAdmin'])->name('settings.destroyAdmin');
 
+
         // admin product
         Route::get('product', [ProdukController::class, 'index'])->name('product'); // Ganti nama route
         Route::post('product', [ProdukController::class, 'store'])->name('product.store');
@@ -212,6 +214,33 @@ Route::middleware(['auth:admin'])->group(function () {
 
     });
 });
+
+// use App\Http\Controllers\Api\AuthController;
+// Form awal untuk isi email/telepon
+Route::get('/register', function () {
+    return view('register');
+})->name('register.form');
+// Form OTP setelah email dikirim
+Route::get('/verify-otp', function () {
+    return view('auth.verify-otp');
+})->name('verify.otp.form');
+// Proses POST register (kirim email + simpan pelanggan)
+Route::post('/register', [AuthController::class, 'register'])->name('register');
+// Proses verifikasi OTP
+Route::post('/verify-otp', [AuthController::class, 'verifyOtp'])->name('verify.otp');
+// Proses resend OTP
+Route::post('/resend-otp', [AuthController::class, 'resendOtp'])->name('resend.otp');
+
+// Forgot password
+Route::get('/forgot-password', [ForgotPasswordController::class, 'showEmailForm'])->name('forgot.password.form');
+Route::post('/forgot-password/send-otp', [ForgotPasswordController::class, 'sendOtp'])->name('forgot.password.sendOtp');
+Route::get('/forgot-password/verify', [ForgotPasswordController::class, 'showVerifyOtpForm'])->name('forgot.password.verify.form');
+Route::post('/forgot-password/verify-otp', [ForgotPasswordController::class, 'verifyOtp'])->name('forgot.password.verifyOtp');
+Route::post('/forgot-password/resend-otp', [ForgotPasswordController::class, 'resendOtp'])->name('forgot.password.resendOtp');
+Route::get('/forgot-password/reset', [ForgotPasswordController::class, 'showResetForm'])->name('forgot.password.reset.form');
+Route::post('/forgot-password/reset', [ForgotPasswordController::class, 'resetPassword'])->name('forgot.password.reset');
+
+
 
 // Rute untuk lokasi toko
 Route::get('/stores', [StoreLocationController::class, 'index'])->name('stores.index'); // New route

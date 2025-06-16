@@ -74,5 +74,19 @@ class AdminStoreController extends Controller
         return redirect()->route('admin.store')->with('success', 'Data toko berhasil diperbarui.');
     }
 
+    public function destroy($id)
+    {
+        $store = StoreLocation::findOrFail($id);
+        
+        // Hapus gambar jika perlu
+        if ($store->img && file_exists(public_path('images/store/' . $store->img))) {
+            unlink(public_path('images/store/' . $store->img));
+        }
+
+        $store->delete();
+
+        return redirect()->back()->with('success', 'Toko berhasil dihapus.');
+    }
+
 
 }

@@ -15,12 +15,31 @@ return new class extends Migration {
             $table->string('telp', 15)->nullable();
             $table->enum('jenis_kelamin', ['Laki-laki', 'Perempuan'])->nullable();
             $table->text('alamat')->nullable();
+            $table->string('otp')->nullable();
+            $table->timestamp('otp_expires_at')->nullable();
+            $table->boolean('email_verified')->default(false);
             $table->timestamps();
         });
     }
-
     public function down(): void
     {
-        Schema::dropIfExists('pelanggan');
+        Schema::table('pelanggan', function (Blueprint $table) {
+            $table->dropColumn([
+                'name_pelanggan', // Jika Anda menambahkan ini
+                'telp',
+                'jenis_kelamin',
+                'alamat',
+                'otp',
+                'otp_expires_at',
+                'email_verified'
+            ]);
+            // Jika Anda rename 'name' ke 'name_pelanggan', balikkan juga:
+            // $table->renameColumn('name_pelanggan', 'name');
+        });
     }
+
+    // public function down(): void
+    // {
+    //     Schema::dropIfExists('pelanggan');
+    // }
 };

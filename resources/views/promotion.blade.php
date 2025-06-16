@@ -67,6 +67,7 @@
             @endif
         </div>
     </section>
+    @include('layouts.wa')
     @include('layouts.footer')
 </body>
 </html>

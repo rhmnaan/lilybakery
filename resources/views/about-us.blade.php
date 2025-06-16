@@ -42,7 +42,7 @@
             <img src="/images/lily.jpg" alt="Wheat Field" class="rounded-lg shadow-md bg-gray-200 h-[800px] w-full object-cover">
         </div>
     </section>
-
+    @include('layouts.wa')
     @include('layouts.footer')
 </body>
 </html>

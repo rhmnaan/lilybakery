@@ -7,7 +7,7 @@
             @include('Admin.layouts.sidebar')
 
             {{-- Main Content --}}
-            <div class="flex-1 p-8 overflow-y-auto">
+            <div class="flex-1 p-8 ">
                 {{-- Judul dan Pencarian --}}
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
                     <h1 class="text-3xl font-bold text-gray-800">Lokasi Toko</h1>
@@ -18,8 +18,6 @@
                             class="flex-shrink-0 bg-pink-500 hover:bg-pink-600 text-white text-sm px-4 py-2 rounded-full shadow transition duration-300">
                             + Tambah Toko
                         </button>
-
-
 
                         {{-- Input Pencarian --}}
                         <div class="relative w-full">
@@ -35,10 +33,12 @@
                 </div>
 
 
-                {{-- Grid Card --}}
-                <div id="storeContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {{-- Grid Card Scrollable --}}
+                <div id="storeContainer" class="overflow-y-auto pr-2"
+                    style="max-height: calc(100vh - 200px);">
                     @include('admin.partials.store-cards', ['storeLocations' => $storeLocations])
                 </div>
+
             </div>
         </div>
     </div>

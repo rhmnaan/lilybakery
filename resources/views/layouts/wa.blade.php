@@ -1,5 +1,5 @@
 <!-- Chat WhatsApp dengan teks sambutan -->
-<a href="https://wa.me/6281234567890" target="_blank"
+<a href="https://wa.me/6281883400426" target="_blank"
    class="fixed z-50 bottom-6 right-6 flex flex-col items-end space-y-2">
 
   <!-- Balon chat di atas ikon dengan animasi -->

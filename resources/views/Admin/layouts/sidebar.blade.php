@@ -13,6 +13,7 @@
             <i class="far fa-check-circle mr-3 text-xl"></i>
             <span>Dashboard</span>
         </a>
+        
 
         {{-- Product --}}
         <a href="{{ route('admin.product') }}" class="flex items-center px-6 py-3 rounded-md text-gray-700 hover:bg-[#FFEAEA]">

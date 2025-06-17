@@ -180,9 +180,10 @@ Route::middleware(['auth:admin'])->group(function () {
         Route::get('product/{produk}/edit', [ProdukController::class, 'edit'])->name('product.edit');
         Route::put('product/{produk}', [ProdukController::class, 'update'])->name('product.update');
         Route::delete('product/{produk}', [ProdukController::class, 'destroy'])->name('product.destroy');
+        
 
         // admin product promo
-        Route::get('product/promo/{id}/edit', [ProdukController::class, 'editPromo'])->name('product.promo.edit');
+        Route::get('product/promo/kode/{kode_produk}/edit', [ProdukController::class, 'editPromoByKode'])->name('product.promo.editByKode');
         Route::post('product/promo/{id}/update', [ProdukController::class, 'updatePromo'])->name('product.promo.update');
 
 

@@ -53,7 +53,7 @@
 
   <?php echo $__env->make('layouts.header', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
-  <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-20 mt-36">
+  <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-2 mt-36">
     <div
       class="grid grid-cols-3 gap-2 sm:gap-4 mb-10 max-w-screen-2xl mx-auto w-full px-4 sm:px-6 md:px-10 lg:px-2 text-sm sm:text-base lg:text-lg">
       <div class="bg-[#D6A1A1] text-black px-4 py-2 rounded-full font-semibold text-center">1. Cart</div>
@@ -165,50 +165,63 @@ if ($__empty_1): ?>
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      const options = document.querySelectorAll(".payment-option");
-      options.forEach(option => {
-        option.addEventListener("click", function () {
-          options.forEach(el => el.classList.remove("selected"));
-          this.classList.add("selected");
-          this.querySelector("input[type='radio']").checked = true;
-        });
+    const options = document.querySelectorAll(".payment-option");
+    options.forEach(option => {
+      option.addEventListener("click", function () {
+        options.forEach(el => el.classList.remove("selected"));
+        this.classList.add("selected");
+        this.querySelector("input[type='radio']").checked = true;
       });
+    });
 
-      const checkoutBtn = document.getElementById('checkoutBtn');
-      checkoutBtn.addEventListener('click', async function () {
-        const selectedMethod = document.querySelector("input[name='payment_method']:checked");
-        if (!selectedMethod) {
-          Swal.fire('Peringatan', 'Silakan pilih metode pembayaran terlebih dahulu.', 'warning');
-          return;
-        }
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    checkoutBtn.addEventListener('click', async function () {
+      const selectedMethod = document.querySelector("input[name='payment_method']:checked");
+      if (!selectedMethod) {
+        Swal.fire('Peringatan', 'Silakan pilih metode pembayaran terlebih dahulu.', 'warning');
+        return;
+      }
 
-        checkoutBtn.disabled = true;
-        checkoutBtn.innerText = 'Processing...';
+      Swal.fire({
+        title: 'Konfirmasi Pembayaran',
+        text: 'Pesanan yang sudah masuk tidak bisa dibatalkan. Lanjutkan pembayaran?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, bayar sekarang',
+        cancelButtonText: 'Batal'
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          checkoutBtn.disabled = true;
+          checkoutBtn.innerText = 'Processing...';
 
-        try {
-          const response = await fetch('<?php echo e(route("payment.process")); ?>', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({ payment_method: selectedMethod.value })
-          });
+          try {
+            const response = await fetch('<?php echo e(route("payment.process")); ?>', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+              },
+              body: JSON.stringify({ payment_method: selectedMethod.value })
+            });
 
-          const result = await response.json();
-          if (response.ok) {
-            handlePaymentResponse(result);
-          } else {
-            throw new Error(result.error || 'Terjadi kesalahan pada server.');
+            const result = await response.json();
+            if (response.ok) {
+              handlePaymentResponse(result);
+            } else {
+              throw new Error(result.error || 'Terjadi kesalahan pada server.');
+            }
+          } catch (error) {
+            Swal.fire('Error', error.message, 'error');
+          } finally {
+            checkoutBtn.disabled = false;
+            checkoutBtn.innerText = 'Bayar Sekarang';
           }
-        } catch (error) {
-          Swal.fire('Error', error.message, 'error');
-        } finally {
-          checkoutBtn.disabled = false;
-          checkoutBtn.innerText = 'Bayar Sekarang';
         }
       });
     });
+  });
 
     // === FUNGSI YANG DIPERBARUI untuk menangani e-wallet lain ===
     function handlePaymentResponse(response) {

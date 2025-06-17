@@ -76,21 +76,24 @@
                 {{-- [MODIFIKASI] Tampilkan blok yang berbeda berdasarkan kategori --}}
                 {{-- TAMPILAN NORMAL UNTUK PRODUK LAIN --}}
                 <div class="bg-gray-50 p-6 rounded-lg border shadow-sm space-y-5">
-                    <div class="text-center">
-                        <h3 class="text-xl font-semibold text-gray-800">Pemesanan Khusus</h3>
-                        <p class="text-gray-600 text-sm">
-                            Untuk kue kustom, pemesanan dan diskusi desain dilakukan via WhatsApp untuk memastikan
-                            hasilnya
-                            sesuai keinginan Anda.
-                        </p>
-                        {{-- Ganti NOMOR_WHATSAPP dengan nomor Anda --}}
-                        <a href="https://wa.me/6281234567890?text=Halo,%20saya%20tertarik%20untuk%20memesan%20custom%20cake%20'{{ urlencode($produk->nama_produk) }}'"
-                            target="_blank"
-                            class="w-full inline-block bg-green-500 hover:bg-green-600 text-white py-3 rounded-full transition duration-300 font-semibold">
-                            <i class="fab fa-whatsapp mr-2"></i> Hubungi untuk Pesan
-                        </a>
-                    </div>
-                    <div class="flex items-center justify-between">
+
+                    {{-- TAMPILAN KHUSUS JIKA KATEGORI ADALAH CUSTOM CAKE --}}
+                    @if (Str::lower($produk->kategori->nama_kategori ?? '') === 'custom cake')
+                        <div class="text-center space-y-4">
+                            <h3 class="text-xl font-semibold text-gray-800">Pemesanan Khusus</h3>
+                            <p class="text-gray-600 text-sm">
+                                Untuk kue kustom, silakan hubungi kami melalui WhatsApp untuk konsultasi desain.
+                            </p>
+                            <a href="https://wa.me/6281234567890?text=Halo,%20saya%20tertarik%20untuk%20memesan%20custom%20cake%20'{{ urlencode($produk->nama_produk) }}'"
+                                target="_blank"
+                                class="w-full inline-block bg-green-500 hover:bg-green-600 text-white py-3 rounded-full transition duration-300 font-semibold">
+                                <i class="fab fa-whatsapp mr-2"></i> Hubungi untuk Pesan
+                            </a>
+                        </div>
+                    @endif
+
+                    {{-- TETAP TAMPILKAN QUANTITY DAN TOMBOL PEMBELIAN --}}
+                    <div class="flex items-center justify-between pt-4">
                         <div class="flex items-center border rounded-full overflow-hidden">
                             <button type="button" onclick="updateQty(-1)"
                                 class="text-xl text-gray-600 px-4 py-2 hover:bg-gray-100">-</button>
@@ -102,26 +105,41 @@
                             Rp {{ number_format($produk->harga, 0, ',', '.') }}
                         </div>
                     </div>
-                    <br>
-                    <div class="flex flex-col space-y-3">
-                        <form action="{{ route('keranjang.tambah') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="kode_produk" value="{{ $produk->kode_produk }}">
-                            <input type="hidden" name="jumlah" id="add_to_cart_quantity_input" value="1">
-                            <button type="submit"
+
+                    <div class="flex flex-col space-y-3 pt-4">
+                        @auth('pelanggan')
+                            {{-- Jika pelanggan sudah login --}}
+                            <form action="{{ route('keranjang.tambah') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="kode_produk" value="{{ $produk->kode_produk }}">
+                                <input type="hidden" name="jumlah" id="add_to_cart_quantity_input" value="1">
+                                <button type="submit"
+                                    class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 rounded-full transition duration-300 font-semibold">
+                                    Add to Cart
+                                </button>
+                            </form>
+
+                            <form action="{{ route('order.buyNow') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="kode_produk" value="{{ $produk->kode_produk }}">
+                                <input type="hidden" name="jumlah" id="buy_now_quantity_input" value="1">
+                                <button type="submit"
+                                    class="w-full bg-lily-pink hover:bg-lily-pink-dark text-white py-3 rounded-full transition duration-300 font-semibold">
+                                    Buy Now
+                                </button>
+                            </form>
+                        @else
+                            {{-- Jika belum login --}}
+                            <button onclick="return checkLogin(false)"
                                 class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 rounded-full transition duration-300 font-semibold">
                                 Add to Cart
                             </button>
-                        </form>
-                        <form action="{{ route('order.buyNow') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="kode_produk" value="{{ $produk->kode_produk }}">
-                            <input type="hidden" name="jumlah" id="buy_now_quantity_input" value="1">
-                            <button type="submit"
+
+                            <button onclick="return checkLogin(false)"
                                 class="w-full bg-lily-pink hover:bg-lily-pink-dark text-white py-3 rounded-full transition duration-300 font-semibold">
                                 Buy Now
                             </button>
-                        </form>
+                        @endauth
                     </div>
                 </div>
             </div>
@@ -159,6 +177,27 @@
             }
         </script>
     @endif
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function checkLogin(isLoggedIn) {
+        if (!isLoggedIn) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Login Diperlukan',
+                text: 'Silakan login terlebih dahulu untuk melakukan tindakan ini.',
+                confirmButtonText: 'Login Sekarang'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{{ route('pelanggan.login.form') }}";
+                }
+            });
+            return false;
+        }
+        return true;
+    }
+</script>
+
+
 </body>
 
 </html>

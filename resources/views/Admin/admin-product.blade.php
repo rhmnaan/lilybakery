@@ -424,7 +424,7 @@
         modal.classList.remove('hidden');
 
         // Fetch data promo berdasarkan kode_produk
-        fetch(`/admin/product/promo/${produkKode}/edit`) // Sesuaikan route di backend
+        fetch(`/admin/product/promo/kode/${produkKode}/edit`) // Sesuaikan route di backend
             .then(response => {
                 if (!response.ok) {
                     // Jika respons bukan 2xx, throw error agar ditangkap catch

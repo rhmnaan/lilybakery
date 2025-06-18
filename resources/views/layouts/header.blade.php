@@ -99,34 +99,20 @@
                 <a href="{{ url('/about-us') }}" class="text-[#707070] hover:text-lily-pink-dark">ABOUT US</a>
             </nav>
             <!-- Dropdown Menu -->
-            <div id="dropdown-menu" class="absolute left-0 top-full w-full bg-white shadow-lg z-50 py-4 ">
-                <div class="flex flex-col space-y-2 text-left ">
-                    <a href="{{ url('/menu/bread') }}" class="flex items-center py-2 hover:bg-gray-100 rounded pl-20">
-                        <img src="/images/menu/bread.jpg" alt="Bread" class="w-10 h-10 rounded-full object-cover">
-                        <span class="font-questrial text-[16px] font-normal ml-3 text-gray-700">Bread</span>
-                    </a>
-                    <a href="{{ url('/menu/cake') }}" class="flex items-center py-2 hover:bg-gray-100 rounded pl-20">
-                        <img src="/images/menu/cake.jpg" alt="Cake" class="w-10 h-10 rounded-full object-cover">
-                        <span class="font-questrial text-[16px] font-normal ml-3 text-gray-700">Cake</span>
-                    </a>
-                    <a href="{{ url('/menu/Custom Cake') }}" class="flex items-center py-2 hover:bg-gray-100 rounded pl-20">
-                        <img src="/images/menu/customCake.jpg" alt="Custom Cake" class="w-10 h-10 rounded-full object-cover">
-                        <span class="font-questrial text-[16px] font-normal ml-3 text-gray-700">Custom Cake</span>
-                    </a>
-                    <a href="{{ url('/menu/cookies') }}" class="flex items-center py-2 hover:bg-gray-100 rounded pl-20">
-                        <img src="/images/menu/cookies.jpg" alt="Cookies" class="w-10 h-10 rounded-full object-cover">
-                        <span class="font-questrial text-[16px] font-normal ml-3 text-gray-700">Cookies</span>
-                    </a>
-                    <a href="{{ url('/menu/donat') }}" class="flex items-center py-2 hover:bg-gray-100 rounded pl-20">
-                        <img src="/images/menu/donat.jpg" alt="Donat" class="w-10 h-10 rounded-full object-cover">
-                        <span class="font-questrial text-[16px] font-normal ml-3 text-gray-700">Donat</span>
-                    </a>
-                    <a href="{{ url('/menu/macaroon') }}" class="flex items-center py-2 hover:bg-gray-100 rounded pl-20">
-                        <img src="/images/menu/Macaroon.jpg" alt="Macaroon" class="w-10 h-10 rounded-full object-cover">
-                        <span class="font-questrial text-[16px] font-normal ml-3 text-gray-700">Macaroon</span>
-                    </a>
-                </div>
-            </div>
+            <div id="dropdown-menu" class="absolute left-0 top-full w-full bg-white shadow-lg z-50 py-4">
+              <div class="flex flex-col space-y-2 text-left">
+                  @foreach ($kategoris as $kategori)
+                      <a href="{{ url('/menu/' . strtolower($kategori->nama_kategori)) }}"
+                        class="flex items-center py-2 hover:bg-gray-100 rounded pl-20">
+                          <img src="{{ asset('images/menu/' . $kategori->img) }}" alt="{{ $kategori->nama_kategori }}"
+                              class="w-10 h-10 rounded-full object-cover">
+                          <span class="font-questrial text-[16px] font-normal ml-3 text-gray-700">
+                              {{ $kategori->nama_kategori }}
+                          </span>
+                      </a>
+                  @endforeach
+              </div>
+          </div>
         </div>
 
         <!-- Kanan: Cart (Mobile) + Toggle (Mobile) + Login (Desktop) -->
@@ -222,31 +208,19 @@
             <div id="mobile-dropdown-menu"
                 class="hidden flex-col space-y-2 mt-2 transition-all duration-300 ease-in-out transform opacity-0 scale-y-95 origin-top">
 
-                <a href="{{ url('/menu/bread') }}" class="flex items-center py-2 hover:bg-gray-100 rounded pl-4">
-                    <img src="/images/menu/bread.jpg" alt="Bread" class="w-10 h-10 rounded-full object-cover">
-                    <span class="font-questrial text-[16px] font-normal ml-3 text-gray-700">Bread</span>
-                </a>
-                <a href="{{ url('/menu/cake') }}" class="flex items-center py-2 hover:bg-gray-100 rounded pl-4">
-                    <img src="/images/menu/cake.jpg" alt="Cake" class="w-10 h-10 rounded-full object-cover">
-                    <span class="font-questrial text-[16px] font-normal ml-3 text-gray-700">Cake</span>
-                </a>
-                <a href="{{ url('/custom-cakes') }}" class="flex items-center py-2 hover:bg-gray-100 rounded pl-4">
-                    <img src="/images/menu/customCake.jpg" alt="Custom Cake" class="w-10 h-10 rounded-full object-cover">
-                    <span class="font-questrial text-[16px] font-normal ml-3 text-gray-700">Custom Cake</span>
-                </a>
-                <a href="{{ url('/menu/cookies') }}" class="flex items-center py-2 hover:bg-gray-100 rounded pl-4">
-                    <img src="/images/menu/cookies.jpg" alt="Cookies" class="w-10 h-10 rounded-full object-cover">
-                    <span class="font-questrial text-[16px] font-normal ml-3 text-gray-700">Cookies</span>
-                </a>
-                <a href="{{ url('/menu/donat') }}" class="flex items-center py-2 hover:bg-gray-100 rounded pl-4">
-                    <img src="/images/menu/donat.jpg" alt="Donat" class="w-10 h-10 rounded-full object-cover">
-                    <span class="font-questrial text-[16px] font-normal ml-3 text-gray-700">Donat</span>
-                </a>
-                <a href="{{ url('/menu/macaroon') }}" class="flex items-center py-2 hover:bg-gray-100 rounded pl-4">
-                    <img src="/images/menu/Macaroon.jpg" alt="Macaroon" class="w-10 h-10 rounded-full object-cover">
-                    <span class="font-questrial text-[16px] font-normal ml-3 text-gray-700">Macaroon</span>
-                </a>
+                @foreach ($kategoris as $kategori)
+                    <a href="{{ url('/menu/' . Str::slug($kategori->nama_kategori)) }}"
+                      class="flex items-center py-2 hover:bg-gray-100 rounded pl-4">
+                        <img src="{{ asset('images/menu/' . $kategori->img) }}"
+                            alt="{{ $kategori->nama_kategori }}"
+                            class="w-10 h-10 rounded-full object-cover">
+                        <span class="font-questrial text-[16px] font-normal ml-3 text-gray-700">
+                            {{ $kategori->nama_kategori }}
+                        </span>
+                    </a>
+                @endforeach
             </div>
+
 
             <a href="{{ url('/promotion') }}" class="text-[#707070] hover:text-lily-pink-dark">PROMOTION</a>
             <a href="{{ url('/stores') }}" class="text-[#707070] hover:text-lily-pink-dark">STORES</a>

@@ -4,30 +4,34 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\PelangganLoginController;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+
 use App\Http\Controllers\StoreLocationController;
 use App\Http\Controllers\PelangganProfileController;
 use App\Http\Controllers\PromoController;
 use App\Http\Controllers\KeranjangController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PelangganOrderController;
+
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrdersController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ProdukController;
+use App\Http\Controllers\Admin\AdminPromoController;
+use App\Http\Controllers\Admin\KategoriController;
+use App\Http\Controllers\Admin\AdminStoreController;
+
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\UlasanController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CustomCakeController;
-use App\Http\Controllers\Admin\PromoController as AdminPromoController;
 use App\Http\Controllers\MidtransWebhookController;
-use App\Http\Controllers\Admin\AdminStoreController;
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Admin\KategoriController;
-
-
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProdukController as PublicProdukController;
+
+use App\Http\Controllers\Api\AuthController;
+
 
 
 Route::get('/', [HomeController::class, 'index']);
@@ -187,6 +191,9 @@ Route::middleware(['auth:admin'])->group(function () {
         Route::get('product/promo/kode/{kode_produk}/edit', [ProdukController::class, 'editPromoByKode'])->name('product.promo.editByKode');
         Route::post('product/promo/{id}/update', [ProdukController::class, 'updatePromo'])->name('product.promo.update');
 
+        // admin promosi
+        Route::get('/admin/promotions/create', [AdminPromoController::class, 'create'])->name('admin.promo.create');
+        Route::post('/admin/promotions', [AdminPromoController::class, 'store'])->name('admin.promo.store');
 
         // admin promosi
         Route::post('/promotions', [AdminPromoController::class, 'store'])->name('promo.store');
@@ -205,9 +212,6 @@ Route::middleware(['auth:admin'])->group(function () {
         Route::delete('/orders/{order}', [OrdersController::class, 'destroy'])->name('orders.destroy');
 
         // admin setting
-        // Route::get('/setting', function () {
-        //     return view('Admin.admin-setting'); // Sesuaikan path view jika berbeda
-        // })->name('setting');
         // --- Rute untuk Halaman Setting ---
         Route::get('/settings', [SettingController::class, 'index'])->name('settings');
         Route::get('/settings', [SettingController::class, 'index'])->name('settings');
@@ -224,8 +228,6 @@ Route::middleware(['auth:admin'])->group(function () {
         Route::get('/store/search', [AdminStoreController::class, 'search'])->name('store.search');
         Route::post('/store', [AdminStoreController::class, 'store'])->name('store.store');
         Route::put('/store/{id}', [AdminStoreController::class, 'update'])->name('store.update');
-
-        // [TAMBAHKAN INI] Rute untuk menghapus toko
         Route::delete('/store/{id}', [AdminStoreController::class, 'destroy'])->name('store.destroy');
         
       
@@ -276,3 +278,11 @@ Route::get('/menu/{category}', [MenuController::class, 'showCategory'])->name('m
 // Rute untuk menampilkan semua produk
 Route::get('/custom-cakes', [CustomCakeController::class, 'index'])->name('custom-cakes.index');
 
+
+// Rute untuk menampilkan halaman kontak (jika belum ada)
+Route::get('/contact', function () {
+    return view('contact'); // Pastikan nama view ini sesuai
+})->name('contact.show');
+
+// Rute untuk memproses pengiriman formulir kontak
+Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');

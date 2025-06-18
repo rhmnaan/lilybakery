@@ -41,7 +41,7 @@
 
             {{-- Kolom 1: Gambar Produk --}}
             <div class="w-full md:col-span-1">
-                <div class="bg-pink-50 rounded-lg p-4 shadow-sm">
+                <div class="rounded-lg p-4 shadow-sm">
                     <img src="{{ $produk->gambar ? asset('images/products/' . $produk->gambar) : asset('images/placeholder.png') }}"
                         alt="{{ $produk->nama_produk }}" class="w-full h-auto aspect-square object-cover rounded-lg">
                 </div>

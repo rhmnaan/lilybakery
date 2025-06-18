@@ -18,7 +18,9 @@ class ProdukController extends Controller
 
     public function index(Request $request)
     {
-        $query = Produk::with(['kategori', 'promo']); // eager load relasi promo
+        // $produk = Produk::whereDoesntHave('promo')->get(); // hanya produk yang belum punya promo
+        
+        $query = Produk::with(['kategori', 'promo',]); // eager load relasi promo
 
         $filterStatus = $request->input('filter_status');
         $filterKategori = $request->input('filter_kategori');
@@ -50,6 +52,7 @@ class ProdukController extends Controller
 
         $produks = $query->paginate(10)->appends($request->except('page'));
         $kategoris = Kategori::orderBy('nama_kategori')->get();
+        $kategoriList = Kategori::orderBy('nama_kategori')->get();
 
         $activeFilters = [
             'status' => $filterStatus,
@@ -58,14 +61,20 @@ class ProdukController extends Controller
         ];
 
         $imagePath = $this->imagePath;
+        $produkTanpaPromo = Produk::whereNotIn('kode_produk', Promo::pluck('kode_produk'))->get();
+
 
         return view('admin.admin-product', compact(
             'produks',
             'kategoris',
             'activeFilters',
             'imagePath',
-            'filterPromotion' // untuk digunakan di Blade
+            'filterPromotion',
+            'produkTanpaPromo',
+            'kategoriList' // ⬅️ ini untuk filter kategori
         ));
+
+
     }
 
     public function store(Request $request)

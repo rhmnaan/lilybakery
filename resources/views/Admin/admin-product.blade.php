@@ -59,9 +59,7 @@
                     $activeFilterClasses = "bg-[#F9D8D9] text-pink-800";
                     $inactiveFilterClasses = "bg-[#FFFEFB] hover:bg-[#FFF1EA] text-gray-700";
                     // Fungsi untuk membuat URL filter dengan mempertahankan parameter lain
-                    function getFilterUrl($newParams) {
-                        return route('admin.product', array_merge(request()->except(array_keys($newParams)+['page']), $newParams));
-                    }
+                    
                 @endphp
                 <a href="{{ getFilterUrl(['filter_status' => 'active']) }}"
                    class="{{ $filterBaseClasses }} {{ $activeFilters['status'] == 'active' ? $activeFilterClasses : $inactiveFilterClasses }}">
@@ -367,9 +365,11 @@
     </div>
 
     <!-- Modal Tambah Promosi -->
+    
     <div id="addPromoModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
         <div class="bg-[#FFEAE5] p-6 rounded-2xl w-full max-w-md shadow-xl relative mx-4"> {{-- Sesuaikan lebar dan padding --}}
             <h2 class="text-2xl font-bold mb-4 text-[#3D1F1F]">Tambah Promosi Baru</h2>
+            
 
             <!-- Kontainer yang bisa di-scroll untuk form Tambah Promosi -->
             <div class="overflow-y-auto max-h-[calc(100vh-16rem)] pr-2">
@@ -377,19 +377,27 @@
                     @csrf
 
                     <div class="mb-3">
-                        <label for="search_produk_add_promo" class="block text-sm font-semibold mb-1 text-gray-700">Cari Produk</label>
-                        <input type="text" id="search_produk_add_promo" onkeyup="filterProduk('add')" placeholder="Ketik nama produk..." class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="produk_select_add_promo" class="block text-sm font-semibold mb-1 text-gray-700">Pilih Produk</label>
-                        <select name="id_produk" id="produk_select_add_promo" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]" required>
-                            <option value="">Pilih Produk</option>
-                            @foreach ($produks as $produk)
-                                <option value="{{ $produk->kode_produk }}">{{ $produk->nama_produk }}</option>
+                        <label for="filter_kategori_add_promo" class="block text-sm font-semibold mb-1 text-gray-700">Pilih Kategori</label>
+                        <select id="filter_kategori_add_promo" onchange="filterProdukByKategori()" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]">
+                            <option value="">Semua Kategori</option>
+                            @foreach ($kategoriList as $kat)
+                                <option value="{{ $kat->id_kategori }}">{{ $kat->nama_kategori }}</option>
                             @endforeach
                         </select>
                     </div>
+
+                    {{-- Produk Select --}}
+
+
+                    <select name="id_produk" id="produk_select_add_promo" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]" required>
+                        <option value="">Pilih Produk</option>
+                        @foreach ($produkTanpaPromo as $item)
+                            <option value="{{ $item->kode_produk }}" data-kategori="{{ $item->id_kategori }}">
+                                {{ $item->nama_produk }}
+                            </option>
+                        @endforeach
+                    </select>
+
 
                     <div class="mb-3">
                         <label for="add_promo_diskon_persen" class="block text-sm font-semibold mb-1 text-gray-700">Diskon (%)</label>
@@ -428,6 +436,33 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    function filterProdukByKategori() {
+    const selectedKategori = document.getElementById('filter_kategori_add_promo').value;
+    const produkSelect = document.getElementById('produk_select_add_promo');
+    const options = produkSelect.options;
+
+    for (let i = 0; i < options.length; i++) {
+        const opt = options[i];
+        const kategori = opt.getAttribute('data-kategori');
+
+        // Jangan sembunyikan option pertama (label "Pilih Produk")
+        if (i === 0) {
+            opt.style.display = '';
+            continue;
+        }
+
+        // Tampilkan jika kategori cocok atau semua
+        if (!selectedKategori || kategori === selectedKategori) {
+            opt.style.display = '';
+        } else {
+            opt.style.display = 'none';
+        }
+    }
+
+    // Reset pilihan produk
+    produkSelect.selectedIndex = 0;
+}
+
     // Fungsi untuk membuka modal Edit Promo
     function openEditPromoModal(produkKode) {
         const modal = document.getElementById('editPromoModal');

@@ -53,5 +53,6 @@ class Produk extends Model
     {
         return $query->whereDoesntHave('promo');
     }
+    
 
 }

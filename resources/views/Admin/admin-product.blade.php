@@ -207,8 +207,6 @@
                     <div class="overflow-y-auto max-h-[calc(100vh-16rem)] pr-2">
                         <form id="editPromoForm" method="POST">
                             @csrf
-                            @method('PUT')
-
                             <div class="mb-3">
                                 <label for="edit_promo_diskon_persen" class="block text-sm font-semibold mb-1 text-gray-700">Diskon (%)</label>
                                 <input type="number" name="diskon_persen" id="edit_promo_diskon_persen" class="w-full p-3 rounded-md border border-gray-300 bg-white focus:border-[#E59CAA] focus:ring-[#E59CAA]" required>
@@ -427,7 +425,6 @@
         fetch(`/admin/product/promo/kode/${produkKode}/edit`) // Sesuaikan route di backend
             .then(response => {
                 if (!response.ok) {
-                    // Jika respons bukan 2xx, throw error agar ditangkap catch
                     return response.json().then(errorData => {
                         throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
                     });
@@ -435,13 +432,12 @@
                 return response.json();
             })
             .then(data => {
-                // Pastikan data yang diterima sesuai struktur
-                if (data.promo) { // Asumsi backend mengembalikan objek { promo: { ... } }
+                if (data.promo) {
                     document.getElementById('edit_promo_diskon_persen').value = data.promo.diskon_persen || '';
                     document.getElementById('edit_promo_deskripsi_promo').value = data.promo.deskripsi_promo || '';
                     document.getElementById('edit_promo_tanggal_mulai').value = data.promo.tanggal_mulai || '';
                     document.getElementById('edit_promo_tanggal_berakhir').value = data.promo.tanggal_berakhir || '';
-                    document.getElementById('editPromoForm').action = `/admin/product/promo/${produkKode}/update`; // Sesuaikan route di backend
+                    document.getElementById('editPromoForm').action = `/admin/product/promo/${produkKode}/update`;
                 } else {
                     Swal.fire('Error', 'Data promo tidak ditemukan untuk produk ini.', 'error');
                     closeEditPromoModal();
@@ -458,7 +454,7 @@
     function closeEditPromoModal() {
         const modal = document.getElementById('editPromoModal');
         modal.classList.add('hidden');
-        document.getElementById('editPromoForm').reset(); // Reset form saat ditutup
+        document.getElementById('editPromoForm').reset();
     }
 
     // Fungsi untuk membuka modal Tambah Promosi
@@ -469,7 +465,7 @@
     // Fungsi untuk menutup modal Tambah Promosi
     function closeAddPromoModal() {
         document.getElementById('addPromoModal').classList.add('hidden');
-        document.getElementById('addPromoForm').reset(); // Reset form saat ditutup
+        document.getElementById('addPromoForm').reset();
     }
 
     // Fungsi untuk filter produk di modal Tambah Promosi
@@ -479,9 +475,6 @@
             input = document.getElementById('search_produk_add_promo').value.toLowerCase();
             select = document.getElementById('produk_select_add_promo');
         }
-        // Tambahkan logic jika Anda punya search di modal edit promo juga
-        // else if (modalType === 'edit') { ... }
-
         options = select.options;
 
         for (let i = 0; i < options.length; i++) {
@@ -489,7 +482,52 @@
             options[i].style.display = optionText.includes(input) ? '' : 'none';
         }
     }
+
+    // ✅ Tambahkan handler untuk submit form Edit Promo pakai AJAX
+    document.getElementById('editPromoForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const form = e.target;
+        const url = form.action;
+        const formData = new FormData(form);
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    throw new Error(errorData.message || 'Gagal memperbarui promosi.');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: data.message || 'Promosi berhasil diperbarui!',
+                timer: 2000,
+                showConfirmButton: false
+            });
+
+            closeEditPromoModal();
+
+            // ⏳ Optional: Refresh halaman atau tabel data jika perlu
+            setTimeout(() => {
+                location.reload(); // Reload halaman agar perubahan promo terlihat
+            }, 2000);
+        })
+        .catch(error => {
+            Swal.fire('Error', error.message, 'error');
+        });
+    });
 </script>
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {

@@ -159,23 +159,28 @@ class ProdukController extends Controller
 
 
 
-    public function editPromo($id)
+    public function editPromoByKode($kode_produk)
     {
-        $produk = Produk::with('promo')->findOrFail($id);
-        if (!$produk->promo) {
+        $produk = Produk::where('kode_produk', $kode_produk)->with('promo')->first();
+
+        if (!$produk || !$produk->promo) {
             return response()->json([
-                'diskon_persen' => '',
-                'deskripsi_promo' => '',
-                'tanggal_mulai' => '',
-                'tanggal_berakhir' => '',
-            ]);
+                'message' => 'Promosi tidak ditemukan'
+            ], 404);
         }
 
-        return response()->json($produk->promo);
+        return response()->json([
+            'promo' => [
+                'diskon_persen' => $produk->promo->diskon_persen,
+                'deskripsi_promo' => $produk->promo->deskripsi_promo,
+                'tanggal_mulai' => $produk->promo->tanggal_mulai,
+                'tanggal_berakhir' => $produk->promo->tanggal_berakhir,
+            ]
+        ]);
     }
 
 
-    public function updatePromo(Request $request, $id)
+    public function updatePromo(Request $request, $kode_produk)
     {
         $request->validate([
             'diskon_persen' => 'required|numeric|min:1|max:100',
@@ -184,7 +189,8 @@ class ProdukController extends Controller
             'tanggal_berakhir' => 'required|date|after_or_equal:tanggal_mulai',
         ]);
 
-        $promo = Promo::where('produk_id', $id)->first();
+        // Cari berdasarkan kode_produk (bukan produk_id)
+        $promo = Promo::where('kode_produk', $kode_produk)->first();
 
         if (!$promo) {
             return response()->json(['error' => 'Promosi tidak ditemukan'], 404);
@@ -193,12 +199,13 @@ class ProdukController extends Controller
         $promo->update([
             'diskon_persen' => $request->diskon_persen,
             'deskripsi_promo' => $request->deskripsi_promo,
-            'tanggal_mulai' => Carbon::parse($request->tanggal_mulai),
-            'tanggal_berakhir' => Carbon::parse($request->tanggal_berakhir),
+            'tanggal_mulai' => \Carbon\Carbon::parse($request->tanggal_mulai),
+            'tanggal_berakhir' => \Carbon\Carbon::parse($request->tanggal_berakhir),
         ]);
 
-        return response()->json(['success' => 'Promosi berhasil diperbarui']);
+        return response()->json(['message' => 'Promosi berhasil diperbarui!']);
     }
+
 
 
 }

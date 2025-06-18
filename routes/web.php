@@ -105,6 +105,8 @@ Route::middleware(['auth:pelanggan'])->group(function () {
     // pesanan
     Route::get('/pesanan', [PelangganOrderController::class, 'index'])->name('pesanan.index');
     Route::post('/ulasan', [UlasanController::class, 'store'])->name('ulasan.store');
+    
+    Route::patch('/admin/product/promo/{kode_produk}/update', [ProdukController::class, 'updatePromo']);
 
 
     // keranjang

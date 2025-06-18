@@ -26,15 +26,6 @@
 
                     <form id="chooseOtpForm" method="POST" action="">
                         @csrf
-                        <div class="mb-4">
-                            <button 
-                                type="button"
-                                onclick="selectOtpMethod('phone')"
-                                class="w-full px-4 py-4 bg-[#E59CAA] text-white rounded-full font-medium hover:bg-[#e879a0] transition duration-300 shadow-md"
-                            >
-                                Nomor Telepon
-                            </button>
-                        </div>
                         <div class="mb-6">
                             <button 
                                 type="button"

@@ -108,7 +108,6 @@ Route::middleware(['auth:pelanggan'])->group(function () {
     
     Route::patch('/admin/product/promo/{kode_produk}/update', [ProdukController::class, 'updatePromo']);
 
-
     // keranjang
     Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang.index');
     Route::post('/keranjang/tambah', [KeranjangController::class, 'tambahKeKeranjang'])->name('keranjang.tambah');
@@ -220,7 +219,6 @@ Route::middleware(['auth:admin'])->group(function () {
         Route::put('/settings/admins/{id}', [SettingController::class, 'updateAdmin'])->name('settings.updateAdmin');
         Route::delete('/settings/admins/{id}', [SettingController::class, 'destroyAdmin'])->name('settings.destroyAdmin');
 
-        // Rute untuk halaman Store Admin
         // Rute untuk halaman Store Admin
         Route::get('/store', [AdminStoreController::class, 'index'])->name('store');
         Route::get('/store/search', [AdminStoreController::class, 'search'])->name('store.search');

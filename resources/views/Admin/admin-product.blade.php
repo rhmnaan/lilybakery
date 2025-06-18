@@ -133,7 +133,19 @@
                             <p class="text-gray-500 text-sm mt-1">Nama Produk:</p>
                             <h3 class="text-xl md:text-2xl font-semibold text-gray-800 mb-1">{{ $produk->nama_produk }}</h3>
                             <p class="text-gray-500 text-sm">Harga:</p>
-                            <p class="text-lg md:text-xl font-bold text-gray-800 mb-1">Rp{{ number_format($produk->harga, 0, ',', '.') }}</p>
+                            @if($produk->promo && \Carbon\Carbon::parse($produk->promo->tanggal_mulai)->isPast() && \Carbon\Carbon::parse($produk->promo->tanggal_berakhir)->isFuture())
+                                @php
+                                    $hargaPromo = $produk->harga - ($produk->harga * $produk->promo->diskon_persen / 100);
+                                @endphp
+                                <p class="text-lg md:text-xl font-bold text-red-600 mb-1">
+                                    Rp{{ number_format($hargaPromo, 0, ',', '.') }}
+                                    <span class="line-through text-sm text-gray-500 ml-2">Rp{{ number_format($produk->harga, 0, ',', '.') }}</span>
+                                </p>
+                            @else
+                                <p class="text-lg md:text-xl font-bold text-gray-800 mb-1">
+                                    Rp{{ number_format($produk->harga, 0, ',', '.') }}
+                                </p>
+                            @endif
                             <p class="text-gray-500 text-sm">Stock:</p>
                             <p class="text-lg md:text-xl font-bold text-gray-800 mb-1">{{ $produk->stok }}</p>
                             <p class="text-gray-500 text-sm">Kategori:</p>

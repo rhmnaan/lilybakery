@@ -13,7 +13,7 @@ class OrderController extends Controller
     /**
      * Menampilkan halaman info pengiriman.
      * Logika disesuaikan untuk menangani alur "Buy Now" dan "Keranjang".
-     */
+     */ 
     public function orderInfo()
     {
         if (!Auth::guard('pelanggan')->check()) {

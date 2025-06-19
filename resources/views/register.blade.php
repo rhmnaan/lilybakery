@@ -39,7 +39,6 @@
 
       <form method="POST" action=""{{ route('register') }}"">
         @csrf
-
         <!-- Name -->
         <div class="mb-5 relative">
           <input
@@ -128,7 +127,6 @@
         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
         @enderror
         </div>
-
 
         <!-- Phone -->
         <div class="mb-5 relative">

@@ -26,7 +26,6 @@
 
                 <form method="POST" action="{{ route('pelanggan.login.attempt') }}" class="space-y-4">
                     @csrf
-
                     <!-- Email / Mobile Number -->
                     <div>
                         <input
